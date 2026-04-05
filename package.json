@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
- "scripts": {
+"scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "npx cap add android 2>/dev/null || true; npx cap add ios 2>/dev/null || true",
-    "build": "npx cap sync"
+    "build": "npx @capacitor/assets generate --iconBackgroundColor '#14432a' --splashBackgroundColor '#14432a' 2>/dev/null || true; npx cap sync"
   },
   "keywords": [],
   "author": "",
