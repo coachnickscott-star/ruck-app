@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "npx cap add android 2>/dev/null || true; npx cap add ios 2>/dev/null || true",
-"build": "npx @capacitor/assets generate --iconBackgroundColor '#14432a' --splashBackgroundColor '#14432a' --ios --android; npx cap sync"  },
-  "keywords": [],
+"build": "node generate-icons.js; npx cap sync"  "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
