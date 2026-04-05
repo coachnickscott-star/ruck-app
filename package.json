@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "npx cap add android 2>/dev/null || true; npx cap add ios 2>/dev/null || true",
-"build": "node generate-icons.js; npx cap sync"  "keywords": [],
+    "build": "node generate-icons.js; npx cap sync"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -16,7 +18,7 @@
     "@capacitor/android": "^8.3.0",
     "@capacitor/ios": "^8.3.0"
   },
- "devDependencies": {
-    "@capacitor/assets": "^3.0.0"
-}
+  "devDependencies": {
+    "sharp": "^0.33.0"
+  }
 }
