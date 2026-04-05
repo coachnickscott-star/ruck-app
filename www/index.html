@@ -15,6 +15,7 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f2f2f7;color:#1c1c1e;-webkit-tap-highlight-color:transparent;padding-top:env(safe-area-inset-top,0px)}
+
 :root{
   --bg:#f2f2f7;--card:#fff;--sep:rgba(60,60,67,.12);
   --lbl:#1c1c1e;--lbl2:#3c3c43;--lbl3:rgba(60,60,67,.55);--lbl4:rgba(60,60,67,.16);
@@ -693,7 +694,9 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
       <div class="ft-title">Full time!</div>
       <div class="ft-sub" id="ftScore">—</div>
       <button class="ft-share-btn" onclick="openShare(null)">Share result</button>
-      <button class="ft-new-btn" onclick="returnHome()">Return Home</button>
+      <button class="ft-new-btn" onclick="viewHalfTimeStats()">View Stats</button>
+      <button class="ft-new-btn" onclick="viewHalfTimeTimeline()">View Timeline</button>
+      <button class="ft-new-btn" onclick="returnHome()" style="margin-top:4px">Return Home</button>
     </div>
   </div>
 
@@ -810,6 +813,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 12px 12px">
         <button class="btn-primary" onclick="startMatchWithTeam()">Start match</button>
         <button style="font-family:inherit;font-size:15px;font-weight:500;padding:13px;background:var(--fill);color:var(--lbl);border:none;border-radius:var(--r);cursor:pointer;width:100%" onclick="editTeamFromOptions()">Edit</button>
+        <button style="font-family:inherit;font-size:15px;font-weight:500;padding:13px;background:rgba(255,59,48,.12);color:var(--red);border:none;border-radius:var(--r);cursor:pointer;width:100%" onclick="deleteTeam()">Delete team</button>
       </div>
       <button class="sh-cancel" onclick="closeOvl('ovl-team-options')">Cancel</button>
     </div>
@@ -822,6 +826,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
       <div class="sh-div"></div>
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 12px 12px">
         <button class="btn-primary" onclick="viewMatchTimeline()">View timeline</button>
+        <button style="font-family:inherit;font-size:15px;font-weight:500;padding:13px;background:rgba(255,59,48,.12);color:var(--red);border:none;border-radius:var(--r);cursor:pointer;width:100%" onclick="deleteMatch()">Delete match</button>
       </div>
       <button class="sh-cancel" onclick="closeOvl('ovl-match-options')">Cancel</button>
     </div>
@@ -886,6 +891,15 @@ function saveHistory(m) {
   localStorage.setItem('rk_hist2',JSON.stringify(h));
 }
 function loadHistory() { try{return JSON.parse(localStorage.getItem('rk_hist2')||'[]');}catch(e){return[];} }
+function saveMatchState(){
+  const ms={myTeam:S.myTeam,opp:S.opp,scFor:S.scFor,scAg:S.scAg,evs:S.evs,half:S.half,ms:S.ms,ts:S.ts,running:S.running,halfMins:S.halfMins,dir:S.dir,kickoffTeam:S.kickoffTeam,mySquad:S.mySquad,oppSquad:S.oppSquad,myTeamKickers:S.myTeamKickers,oppTeamKickers:S.oppTeamKickers,_fullTimeMode:S._fullTimeMode};
+  localStorage.setItem('rk_match_state',JSON.stringify(ms));
+}
+function clearMatchState(){localStorage.removeItem('rk_match_state');}
+function loadMatchState(){
+  try{const m=localStorage.getItem('rk_match_state');if(m)return JSON.parse(m);}catch(e){}
+  return null;
+}
 
 // ════════════════════════════════════════════════════════
 // AUTH (email capture only — no password)
@@ -962,6 +976,22 @@ function startMatchWithTeam(){
   },100);
 }
 function editTeamFromOptions(){const id=S._selectedTeamId;closeOvl('ovl-team-options');openEditTeam(id);}
+function deleteTeam(){
+  const id=S._selectedTeamId;const t=S.teams.find(x=>x.id===id);
+  if(!t)return;
+  if(!confirm(`Delete "${t.name}"? This cannot be undone.`))return;
+  S.teams=S.teams.filter(x=>x.id!==id);
+  saveTeams();renderTeamListHome();renderHomeActionCard();
+  closeOvl('ovl-team-options');
+}
+function deleteMatch(){
+  const idx=S._selectedRecentMatchIdx;
+  if(!confirm('Delete this match from history?'))return;
+  let h=loadHistory();h.splice(idx,1);
+  localStorage.setItem('rk_hist2',JSON.stringify(h));
+  renderRecentMatches();
+  closeOvl('ovl-match-options');
+}
 function openAddTeam(){S.editTeamId=null;openEditTeam(null);}
 function openEditTeam(id){S.editTeamId=id;const t=id?S.teams.find(x=>x.id===id):null;document.getElementById('teamEditNavTitle').textContent=t?'Edit Team':'Add Team';document.getElementById('teTeamName').value=t?t.name:'';document.getElementById('teLeague').value=t?t.league:'';renderSquadGrid(t?t.squad:[],false);renderKickersList(t?t.kickers:[],false);openPage('pg-team-edit');}
 function renderSquadGrid(squad,inline){const g=document.getElementById(inline?'squadGridInline':'squadGrid');g.innerHTML='';for(let i=1;i<=23;i++){const p=squad.find(x=>x.num===i);g.innerHTML+=`<div class="sq-cell"><span class="sq-num">${i}</span><input type="text" class="sq-inp" id="sq_${i}" placeholder=" " value="${p?p.name:''}"></div>`;}if(!inline)g.querySelectorAll('.sq-inp').forEach(e=>{e.addEventListener('input',()=>{})});}
@@ -1099,21 +1129,22 @@ function startMatch() {
   updClock();updScore();renderTl();
   closePage('pg-setup');
   openPage('pg-match');
+  saveMatchState();
 }
 
 function sBtn(id,txt,fn,dis){const b=document.getElementById(id);if(b){b.textContent=txt;if(fn!==undefined)b.onclick=fn;b.disabled=dis;}}
-function handleMain(){if(!S.running){S.ts=Date.now()-S.ms;S.running=true;S.timer=setInterval(tick,100);sBtn('mainBtn','Pause',handleMain,false);document.getElementById('timerDisp').className='timer-big live';document.getElementById('timerLbl').textContent=S.half===1?'First half — in progress':'Second half — in progress';document.getElementById('matchHalfLbl').textContent=S.half===1?'1st half':'2nd half';document.getElementById('resetBtn').disabled=false;document.getElementById('halfBtn').disabled=false;enableEvBtns(true);}else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','Resume',handleMain,false);document.getElementById('timerDisp').className='timer-big paused';document.getElementById('timerLbl').textContent='Paused';}}
-function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;document.getElementById('htBanner').classList.add('show');document.getElementById('htTimerLbl').textContent='First half ended at';document.getElementById('htTimerDisp').textContent=fmtMs(S.ms);document.getElementById('mainBtn').disabled=true;document.getElementById('resetBtn').disabled=true;enableEvBtns(false);}else if(S.half===2){S._fullTimeMode=true;document.querySelector('.timer-ctrls').style.display='none';document.querySelector('.scoring-card').style.display='none';document.getElementById('timerLbl').textContent='Full time';document.getElementById('matchHalfLbl').textContent='';document.getElementById('timerDisp').className='timer-big';document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();}}
-function resumeFromHT(){S.ts=Date.now();S.running=true;S.timer=setInterval(tick,100);sBtn('mainBtn','Pause',handleMain,false);document.getElementById('htBanner').classList.remove('show');document.getElementById('timerDisp').className='timer-big live';document.getElementById('timerLbl').textContent='Second half — in progress';document.getElementById('matchHalfLbl').textContent='2nd half';const hb=document.getElementById('halfBtn');hb.textContent='Full time';hb.disabled=false;document.getElementById('resetBtn').disabled=false;enableEvBtns(true);}
+function handleMain(){if(!S.running){S.ts=Date.now()-S.ms;S.running=true;S.timer=setInterval(tick,100);sBtn('mainBtn','Pause',handleMain,false);document.getElementById('timerDisp').className='timer-big live';document.getElementById('timerLbl').textContent=S.half===1?'First half — in progress':'Second half — in progress';document.getElementById('matchHalfLbl').textContent=S.half===1?'1st half':'2nd half';document.getElementById('resetBtn').disabled=false;document.getElementById('halfBtn').disabled=false;enableEvBtns(true);}else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','Resume',handleMain,false);document.getElementById('timerDisp').className='timer-big paused';document.getElementById('timerLbl').textContent='Paused';saveMatchState();}}
+function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;document.getElementById('htBanner').classList.add('show');document.getElementById('htTimerLbl').textContent='First half ended at';document.getElementById('htTimerDisp').textContent=fmtMs(S.ms);document.getElementById('mainBtn').disabled=true;document.getElementById('resetBtn').disabled=true;enableEvBtns(false);saveMatchState();}else if(S.half===2){S._fullTimeMode=true;document.querySelector('.timer-ctrls').style.display='none';document.querySelector('.scoring-card').style.display='none';document.getElementById('timerLbl').textContent='Full time';document.getElementById('matchHalfLbl').textContent='';document.getElementById('timerDisp').className='timer-big';document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();clearMatchState();}}
+function resumeFromHT(){S.ts=Date.now();S.running=true;S.timer=setInterval(tick,100);sBtn('mainBtn','Pause',handleMain,false);document.getElementById('htBanner').classList.remove('show');document.getElementById('timerDisp').className='timer-big live';document.getElementById('timerLbl').textContent='Second half — in progress';document.getElementById('matchHalfLbl').textContent='2nd half';const hb=document.getElementById('halfBtn');hb.textContent='Full time';hb.disabled=false;document.getElementById('resetBtn').disabled=false;enableEvBtns(true);saveMatchState();}
 function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('htBanner').classList.remove('show');document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();}
 function enableEvBtns(en){document.getElementById('b_try').disabled=!en;document.getElementById('b_pengoal').disabled=!en;document.getElementById('b_dropgoal').disabled=!en;document.getElementById('b_penaltytry').disabled=!en;}
 function tick(){S.ms=Date.now()-S.ts;updClock();}
 function updClock(){const t=S.dir==='up'?S.ms:(S.halfMins*60000)-S.ms;const neg=t<0;const m=Math.floor((neg?-t:t)/60000),s=Math.floor(((neg?-t:t)%60000)/1000);const fmt=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');document.getElementById('timerDisp').textContent=fmt;const tc=document.getElementById('timerDisp');const card=document.querySelector('.timer-card');if(S.halfMins&&S.ms>S.halfMins*60000){if(!tc.classList.contains('negative')){tc.classList.add('negative');card.classList.add('overtime');}if(S.dir==='down')tc.classList.add('negative');}else{tc.classList.remove('negative');card.classList.remove('overtime');}}
 function fmtMs(ms){const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
 function confirmLeave(){
-  // No confirmation needed if no events logged (match hasn't really started)
   if(S.evs.length>0&&!confirm('Leave match? Events will be lost.'))return;
   clearInterval(S.timer);clearInterval(S.htTimer);S.running=false;
+  clearMatchState();
   closePage('pg-match');
 }
 
@@ -1195,6 +1226,7 @@ function startFirstHalf(){
 }
 function returnHome(){
   clearInterval(S.timer);clearInterval(S.htTimer);S.running=false;
+  clearMatchState();
   renderHomeActionCard();renderRecentMatches();
   closePage('pg-match');
 }
@@ -1302,6 +1334,7 @@ function logScore(){
   S.selScorerNum=null;
   S.selKickerNum=null;
   showAdInterstitial();
+  saveMatchState();
 }
 function updScore(){document.getElementById('scoreFor').textContent=String(S.scFor);document.getElementById('scoreAg').textContent=String(S.scAg);}
 function renderTl(){const b=document.getElementById('tlBody');if(S.evs.length===0){b.innerHTML='<div class="tl-empty">No events yet</div>';return;}b.innerHTML=S.evs.map((e,i)=>{let eventLabel='';let eventDot=e.side==='for'?'for':'ag';if(e.type==='try'){const scorerDisplay=e.scorerName?`${e.scorerName} (#${e.scorer})`:e.scorer?`#${e.scorer}`:'Unknown';eventLabel=`Try by ${scorerDisplay}`;}else if(e.type==='conversion'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion by ${kickerDisplay}`;}else if(e.type==='conversion-missed'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion missed by ${kickerDisplay}`;}else if(e.type==='pengoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Penalty goal by ${kickerDisplay}`;}else if(e.type==='dropgoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Drop goal by ${kickerDisplay}`;}else if(e.type==='penaltytry'){eventLabel='Penalty try';}else if(e.type==='sys'){eventLabel=e.txt||'System event';eventDot='sys';}return `<div class="tl-row"><div class="tl-dot ${eventDot}"></div><div class="tl-t">${fmtMs(e.ts)}</div><div class="tl-chip">${e.side==='for'?S.myTeam:e.side?S.opp:'Match'}</div><div class="tl-lbl">${eventLabel}</div><div class="tl-score">${e.pts?'+'+e.pts:'—'}</div></div>`;}).join('');}
@@ -1439,6 +1472,32 @@ function init(){
     openPage('pg-login');
   }else{
     const el=document.getElementById('setEmail');if(el)el.textContent=S.user;
+  }
+  // Restore match in progress
+  const saved=loadMatchState();
+  if(saved&&!saved._fullTimeMode){
+    if(confirm(`Resume match: ${saved.myTeam} ${saved.scFor} – ${saved.scAg} ${saved.opp}?`)){
+      S.myTeam=saved.myTeam;S.opp=saved.opp;S.scFor=saved.scFor;S.scAg=saved.scAg;
+      S.evs=saved.evs||[];S.half=saved.half;S.ms=saved.ms;S.halfMins=saved.halfMins;
+      S.dir=saved.dir;S.kickoffTeam=saved.kickoffTeam;S.mySquad=saved.mySquad||[];
+      S.oppSquad=saved.oppSquad||[];S.myTeamKickers=saved.myTeamKickers||[];
+      S.oppTeamKickers=saved.oppTeamKickers||[];S._fullTimeMode=false;
+      document.getElementById('matchTitle').textContent=`${S.myTeam} vs ${S.opp}`;
+      document.getElementById('scoreMyName').textContent=S.myTeam;
+      document.getElementById('scoreOppName').textContent=S.opp;
+      document.querySelector('.timer-ctrls').style.display='';
+      document.querySelector('.scoring-card').style.display='';
+      sBtn('mainBtn','Resume',handleMain,false);
+      if(S.half===2){const hb=document.getElementById('halfBtn');hb.textContent='Full time';hb.disabled=false;}
+      else{sBtn('halfBtn','Half time',handleHalf,false);}
+      document.getElementById('halfBtn').style.display='';
+      document.getElementById('resetBtn').disabled=false;
+      document.getElementById('timerDisp').className='timer-big paused';
+      document.getElementById('timerLbl').textContent='Match resumed — tap Resume';
+      document.getElementById('matchHalfLbl').textContent=S.half===1?'1st half':'2nd half';
+      enableEvBtns(false);updClock();updScore();renderTl();
+      openPage('pg-match');
+    }else{clearMatchState();}
   }
   requestWakeLock();
 }
