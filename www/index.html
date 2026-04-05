@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Ruck - Rugby Match Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -14,7 +14,7 @@
 /* ────────────────────────────────────────────────────────────────────────────── */
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f2f2f7;color:#1c1c1e;-webkit-tap-highlight-color:transparent;padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f2f2f7;color:#1c1c1e;-webkit-tap-highlight-color:transparent}
 
 :root{
   --bg:#f2f2f7;--card:#fff;--sep:rgba(60,60,67,.12);
@@ -45,7 +45,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 .tb.on svg{stroke:var(--blue)}.tb.on span{color:var(--blue)}
 
 .nav{background:rgba(242,242,247,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  padding:14px 16px 10px;border-bottom:.5px solid var(--sep);
+  padding:14px 16px 10px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:.5px solid var(--sep);
   position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px}
 .nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:var(--lbl)}
 .nav-title small{display:block;font-size:11px;font-weight:400;color:var(--lbl3);margin-top:1px}
@@ -141,7 +141,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 /* HOME SCREEN - TEAMS & MATCHES */
 /* ────────────────────────────────────────────────────────────────────────────── */
 
-.home-header{background:var(--card);padding:28px 16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid var(--sep)}
+.home-header{background:var(--card);padding:28px 16px 20px;padding-top:calc(28px + env(safe-area-inset-top,0px));display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid var(--sep)}
 .home-title{font-size:24px;font-weight:700;color:var(--lbl);letter-spacing:-.5px}
 .home-title span{color:var(--blue)}
 .home-cog{background:none;border:none;cursor:pointer;padding:4px;color:var(--lbl3)}
