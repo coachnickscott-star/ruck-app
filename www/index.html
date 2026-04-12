@@ -1297,16 +1297,21 @@ async function handleSheetFileUpload(e){
   try{
     let text='';
     if(file.name.endsWith('.pdf')){
+      showUploadStatus('Loading PDF reader…');
+      if(typeof pdfjsLib==='undefined'){showUploadStatus('PDF reader not available — try a .docx file instead');return;}
+      showUploadStatus('Reading PDF…');
       text=await extractPdfText(file);
     }else if(file.name.endsWith('.docx')){
+      showUploadStatus('Reading document…');
+      if(typeof mammoth==='undefined'){showUploadStatus('Document reader not available — try again');return;}
       text=await extractDocxText(file);
     }else{
       showUploadStatus('Please upload a .pdf or .docx file');return;
     }
+    if(!text||text.trim().length<10){showUploadStatus('Could not read file content — try again');return;}
     showUploadStatus('Extracting squad…');
     const squad=await extractSquadFromText(text);
     if(!squad||squad.length===0){showUploadStatus('Could not find players — try editing manually');return;}
-    // Open sheet editor pre-filled
     openTeamSheetForSetup(S.inlineSheetSide);
     setTimeout(()=>{
       squad.forEach(p=>{
@@ -1316,8 +1321,9 @@ async function handleSheetFileUpload(e){
       hideUploadStatus();
     },300);
   }catch(err){
-    showUploadStatus('Upload failed — try editing manually');
-    console.error(err);
+    const msg=err&&err.message?err.message:'Unknown error';
+    showUploadStatus('Failed: '+msg.substring(0,60));
+    console.error('Upload error:',err);
   }
 }
 
