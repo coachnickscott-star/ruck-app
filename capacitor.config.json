@@ -1,6 +1,6 @@
 {
-  "appId": "io.ruck.app",
-  "appName": "Ruck",
+  "appId": "ai.rugbycoach.app",
+  "appName": "RugbyCoach.AI",
   "webDir": "www",
   "plugins": {
     "AdMob": {
