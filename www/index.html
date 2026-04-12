@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* Ruck Timer - Rugby Match Tracking App */
+/* RugbyCoach.AI - Rugby Match Tracking App */
 /* Stylesheet - All CSS organized by component */
 
 /* ────────────────────────────────────────────────────────────────────────────── */
@@ -466,7 +466,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         <!-- My Teams -->
         <div class="my-teams-card">
           <div class="my-teams-hdr">
-            <div class="my-teams-title">My Teams</div>
+            <div class="my-teams-title">Your Teams</div>
             <button class="my-teams-add-btn" onclick="openAddTeam()">+ Add team</button>
           </div>
           <div id="teamListHome"></div>
@@ -482,10 +482,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
           <div id="recentList"></div>
         </div>
         <!-- Ad banner -->
-        <div class="ad-banner" id="homeBannerAd">
-          <div class="ad-label">AD</div>
-          <div class="ad-placeholder">Ad space — 320×50 AdMob banner</div>
-        </div>
+        <div id="homeBannerAd" style="height:50px;width:100%;display:none"></div>
       </div>
     </div>
   </div>
@@ -554,7 +551,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 28px;max-width:400px;margin:0 auto;width:100%">
       <div style="text-align:center;margin-bottom:32px">
         <div style="font-size:36px;font-weight:700;letter-spacing:-1.5px;color:var(--blue);margin-bottom:4px">RugbyCoach.AI</div>
-        <div style="font-size:14px;color:var(--lbl3)">Live match tracking for grassroots rugby</div>
+        <div style="font-size:14px;color:var(--lbl3)">Built for grassroots rugby coaches</div>
       </div>
       <!-- Tab row -->
       <div style="display:flex;border-bottom:1.5px solid var(--sep);margin-bottom:24px">
@@ -634,7 +631,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         </div>
         <div style="display:flex;gap:8px;padding:0 12px 12px">
           <button class="edit-sheet-btn" style="flex:1;margin:0" onclick="openTeamSheetForSetup('for')">Edit team sheet</button>
-          <button class="edit-sheet-btn" style="flex:1;margin:0;background:var(--fill2);border-radius:var(--r)" onclick="triggerSheetUpload('for')">↑ Upload</button>
+          <button class="edit-sheet-btn" style="flex:1;margin:0;background:var(--fill2);border-radius:var(--r);display:none" onclick="triggerSheetUpload('for')">↑ Upload</button>
         </div>
       </div>
       <div class="setup-team-card" id="setupTeamAgCard">
@@ -655,7 +652,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         </div>
         <div style="display:flex;gap:8px;padding:0 12px 12px">
           <button class="edit-sheet-btn" style="flex:1;margin:0" onclick="openTeamSheetForSetup('against')">Edit team sheet</button>
-          <button class="edit-sheet-btn" style="flex:1;margin:0;background:var(--fill2);border-radius:var(--r)" onclick="triggerSheetUpload('against')">↑ Upload</button>
+          <button class="edit-sheet-btn" style="flex:1;margin:0;background:var(--fill2);border-radius:var(--r);display:none" onclick="triggerSheetUpload('against')">↑ Upload</button>
         </div>
       </div>
       <div class="card">
@@ -729,7 +726,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     <div class="timer-card">
       <div class="timer-dir" id="timerDir"></div>
       <div class="timer-big" id="timerDisp">00:00</div>
-      <div class="timer-lbl" id="timerLbl">Press Start to begin</div>
+      <div class="timer-lbl" id="timerLbl">Tap ▶ to begin</div>
       <div id="matchHalfLbl" style="font-size:12px;color:var(--lbl3);margin-bottom:8px"></div>
       <div class="timer-ctrls">
         <button class="ctrl-btn ctrl-sm ctrl-neutral" id="halfBtn" onclick="handleHalf()" disabled style="display:none">HT</button>
@@ -790,12 +787,12 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     </div>
 
     <div class="ft-banner" id="ftBanner">
-      <div class="ft-title">Full time!</div>
+      <div class="ft-title">Full Time</div>
       <div class="ft-sub" id="ftScore">—</div>
       <button class="ft-share-btn" onclick="openShare(null)">Share result</button>
       <button class="ft-new-btn" onclick="viewHalfTimeStats()">View Stats</button>
       <button class="ft-new-btn" onclick="viewHalfTimeTimeline()">View Timeline</button>
-      <button class="ft-new-btn" onclick="returnHome()" style="margin-top:4px">Return Home</button>
+      <button class="ft-new-btn" onclick="returnHome()" style="margin-top:4px">New Match</button>
     </div>
   </div>
 
@@ -818,7 +815,22 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     </div>
     <div class="privacy-body">
       <h2>Privacy Policy</h2>
-      <p>Your privacy is important. RugbyCoach.AI stores match data locally on your device. No data is sent to external servers without your consent.</p>
+      <p>Last updated: April 2026</p>
+
+      <h3>What we collect</h3>
+      <p>When you create an account, we collect your email address and a securely hashed version of your password. We do not store your password in plain text. Match data (teams, scores, events, timelines) is stored locally on your device.</p>
+
+      <h3>How we use it</h3>
+      <p>Your email address is used to identify your account and, in future, to notify you about product updates and new features. We will never sell your data or share it with third parties for marketing purposes.</p>
+
+      <h3>Where it's stored</h3>
+      <p>Account data is stored securely on Supabase servers located in the EU (West Europe, London). Match data remains on your device and is not uploaded to any server.</p>
+
+      <h3>Your rights</h3>
+      <p>You can request deletion of your account and associated data at any time by emailing us. Upon request, all personal data will be permanently removed within 30 days.</p>
+
+      <h3>Contact</h3>
+      <p>For any privacy questions or deletion requests, contact us at hello@rugbycoach.ai</p>
     </div>
   </div>
 
@@ -827,10 +839,10 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
   <div class="dlg-overlay" id="dlg-leave">
     <div class="dlg-box">
       <div class="dlg-title">Leave Match?</div>
-      <div class="dlg-sub">Your settings will be saved so you can restart with the same teams and options.</div>
+      <div class="dlg-sub">Progress will be lost. Return to set up a new match?</div>
       <div class="dlg-btns">
         <button class="dlg-cancel" onclick="closeLeaveDlg()">Cancel</button>
-        <button class="dlg-ok" onclick="doLeaveMatch()">OK</button>
+        <button class="dlg-ok" onclick="doLeaveMatch()">Leave</button>
       </div>
     </div>
   </div>
@@ -847,7 +859,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
       </div>
       <div class="scorer-grid" id="scorerGrid"></div>
       <button class="sc-confirm" id="whoConfirmBtn" onclick="confirmWho()" style="display:none">Confirm</button>
-      <button class="sc-skip" id="whoSkipBtn" onclick="confirmWho(true)" style="display:none">Skip — don't record scorer</button>
+      <button class="sc-skip" id="whoSkipBtn" onclick="confirmWho(true)" style="display:none">Skip scorer</button>
       <button class="sc-back" onclick="closeOvl('ovl-who')">← Back</button>
     </div>
   </div>
@@ -861,7 +873,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
       <div class="conv-opts">
         <button class="conv-btn conv-ok" onclick="resolveConv(true)">Successful <span class="conv-pts">+2 pts</span></button>
         <button class="conv-btn conv-no" onclick="resolveConv(false)">Unsuccessful</button>
-        <button class="conv-btn conv-sk" onclick="resolveConv(null)">No attempt / skip</button>
+        <button class="conv-btn conv-sk" onclick="resolveConv(null)">No attempt</button>
       </div>
       <button class="sc-back" onclick="closeOvl('ovl-conv')">← Back</button>
     </div>
@@ -895,7 +907,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
   <div class="ovl" id="ovl-share">
     <div class="sheet">
       <div class="sh-handle"></div>
-      <div class="sh-title">Share score update</div>
+      <div class="sh-title">Share</div>
       <div class="sh-div"></div>
       <div class="share-preview" id="sharePreview"></div>
       <div class="share-opts">
@@ -913,7 +925,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         </button>
         <button class="share-btn share-copy" onclick="copyShare()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copy to clipboard
+          Copy
         </button>
       </div>
       <button class="sh-cancel" onclick="closeOvl('ovl-share')">Cancel</button>
@@ -954,8 +966,8 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         <div class="ad-label">AD</div>
         <button class="ad-int-close" id="adCloseBtn" onclick="closeAdInterstitial()">Skip <span id="adCountdown">5</span>s</button>
       </div>
-      <div class="ad-int-body">
-        <div class="ad-int-placeholder">Interstitial ad — 300×250 AdMob</div>
+      <div class="ad-int-body" id="adIntBody">
+        <div class="ad-int-placeholder">Ad loading…</div>
       </div>
     </div>
   </div>
@@ -1525,7 +1537,7 @@ function startMatch() {
   document.getElementById('halfBtn').style.display='';
   document.getElementById('halfBtn').style.fontSize='';
   document.getElementById('timerDisp').className='timer-big';
-  gset('timerLbl','textContent','Press Start to begin — '+S.halfMins+' min halves');
+  gset('timerLbl','textContent','Tap ▶ to begin — '+S.halfMins+' min halves');
   document.getElementById('ftBanner').classList.remove('show');
   document.getElementById('matchShareBtn').style.display='none';
   document.getElementById('htBanner').classList.remove('show');
@@ -1541,9 +1553,13 @@ function startMatch() {
 function sBtn(id,txt,fn,dis){const b=document.getElementById(id);if(b){b.innerHTML=txt;if(fn!==undefined)b.onclick=fn;b.disabled=dis;}}
 function gset(id,prop,val){const el=document.getElementById(id);if(el)el[prop]=val;}
 function gcls(id,method,cls){const el=document.getElementById(id);if(el)el.classList[method](cls);}
-function handleMain(){if(!S.running){S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn','⏸',handleMain,false);gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent',S.half===1?'First half — in progress':'Second half — in progress');gset('matchHalfLbl','textContent',S.half===1?'1st half':'2nd half');const hb=document.getElementById('halfBtn');if(hb)hb.disabled=false;const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);}else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','▶',handleMain,false);gcls('timerDisp','remove','live');gcls('timerDisp','add','paused');gset('timerLbl','textContent','Paused');saveMatchState();}}
+const PAUSE_ICON='<svg width="13" height="19" viewBox="0 0 13 19" style="display:block;margin:auto"><rect x="0" y="0" width="4" height="19" rx="1.5" fill="currentColor"/><rect x="9" y="0" width="4" height="19" rx="1.5" fill="currentColor"/></svg>';
+function handleMain(){if(!S.running){S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn',PAUSE_ICON,handleMain,false);gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent',S.half===1?'First half — in progress':'Second half — in progress');gset('matchHalfLbl','textContent',S.half===1?'1st half':'2nd half');const hb=document.getElementById('halfBtn');if(hb)hb.disabled=false;const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);// Kickoff event on very first start
+if(S.half===1&&S.ms===0&&S.evs.length===0){const koTeam=S.kickoffTeam==='for'?S.myTeam:S.opp;sysEv(`${koTeam} kicked off`);}
+}else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','▶',handleMain,false);gcls('timerDisp','remove','live');gcls('timerDisp','add','paused');gset('timerLbl','textContent','Paused');saveMatchState();}}
 function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;gcls('htBanner','add','show');gset('htTimerLbl','textContent','First half ended at');gset('htTimerDisp','textContent',fmtMs(S.ms));const mb=document.getElementById('mainBtn');if(mb)mb.disabled=true;enableEvBtns(false);saveMatchState();}else if(S.half===2){S._fullTimeMode=true;const tc=document.querySelector('.timer-ctrls');if(tc)tc.style.display='none';const sc=document.querySelector('.scoring-card');if(sc)sc.style.display='none';gset('timerLbl','textContent','Full time');gset('matchHalfLbl','textContent','');gcls('timerDisp','remove','live');gcls('timerDisp','remove','paused');gcls('ftBanner','add','show');gset('ftScore','textContent',`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`);const msb=document.getElementById('matchShareBtn');if(msb)msb.style.display='';saveMatch();clearMatchState();}}
-function resumeFromHT(){if(S.dir==='up'){S.ms=S.halfMins*60000;S.halfMsOffset=S.halfMins*60000;}else{S.ms=0;S.halfMsOffset=0;}S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn','⏸',handleMain,false);gcls('htBanner','remove','show');gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent','Second half — in progress');gset('matchHalfLbl','textContent','2nd half');const hb=document.getElementById('halfBtn');if(hb){hb.innerHTML='FT';hb.disabled=false;}const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);saveMatchState();}
+function resumeFromHT(){if(S.dir==='up'){S.ms=S.halfMins*60000;S.halfMsOffset=S.halfMins*60000;}else{S.ms=0;S.halfMsOffset=0;}S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn',PAUSE_ICON,handleMain,false);gcls('htBanner','remove','show');gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent','Second half — in progress');gset('matchHalfLbl','textContent','2nd half');const hb=document.getElementById('halfBtn');if(hb){hb.innerHTML='FT';hb.disabled=false;}const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);// 2nd half kickoff — opposite team
+const koTeam2=S.kickoffTeam==='for'?S.opp:S.myTeam;sysEv(`${koTeam2} kicked off 2nd half`);saveMatchState();}
 function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('htBanner').classList.remove('show');document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();}
 function enableEvBtns(en){document.getElementById('b_try').disabled=!en;document.getElementById('b_pengoal').disabled=!en;document.getElementById('b_dropgoal').disabled=!en;document.getElementById('b_penaltytry').disabled=!en;}
 function tick(){
@@ -1568,7 +1584,7 @@ function confirmLeave(){
 function closeLeaveDlg(){
   if(S._wasRunningBeforeLeave&&S.ms>0){
     S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);
-    sBtn('mainBtn','⏸',handleMain,false);
+    sBtn('mainBtn',PAUSE_ICON,handleMain,false);
     gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');
   }
   S._wasRunningBeforeLeave=false;
@@ -1633,7 +1649,7 @@ function doLeaveMatch(){
 function startFirstHalf(){
   S.half=1;S._fullTimeMode=false;
   S.ts=Date.now();S.running=true;S.timer=setInterval(tick,100);
-  sBtn('mainBtn','⏸',handleMain,false);
+  sBtn('mainBtn',PAUSE_ICON,handleMain,false);
   document.getElementById('timerDisp').className='timer-big live';
   gset('timerLbl','textContent','First half — in progress');
   gset('matchHalfLbl','textContent','1st half');
@@ -1889,11 +1905,52 @@ function viewHalfTimeTimeline(){
 function closeTimelineModal(){const pg=document.getElementById('pg-halftime-timeline');if(pg)pg.remove();}
 
 // ════════════════════════════════════════════════════════
-// ADS
 // ════════════════════════════════════════════════════════
-let _adTimer=null;
-let _adCountdown=5;
-function showAdInterstitial(){
+// ADMOB
+// ════════════════════════════════════════════════════════
+const ADMOB_BANNER_ID='ca-app-pub-3642567250366576/6811890352';
+const ADMOB_INTERSTITIAL_ID='ca-app-pub-3642567250366576/2688600482';
+
+function getAdMob(){
+  try{return window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.AdMob?window.Capacitor.Plugins.AdMob:null;}
+  catch(e){return null;}
+}
+
+async function initAdMob(){
+  const AdMob=getAdMob();
+  if(!AdMob)return;
+  try{
+    await AdMob.initialize({requestTrackingAuthorization:true,initializeForTesting:false});
+    await AdMob.showBanner({
+      adId:ADMOB_BANNER_ID,
+      adSize:'BANNER',
+      position:'BOTTOM_CENTER',
+      margin:0,
+      isTesting:false
+    });
+    // Make space for native banner
+    document.getElementById('homeBannerAd').style.display='block';
+  }catch(e){console.warn('AdMob banner init failed:',e);}
+}
+
+let _adTimer=null,_adCountdown=5;
+async function showAdInterstitial(){
+  const AdMob=getAdMob();
+  if(AdMob){
+    try{
+      await AdMob.prepareInterstitial({adId:ADMOB_INTERSTITIAL_ID,isTesting:false});
+      // Listen for dismissal then trigger share
+      AdMob.addListener('interstitialAdDismissed',()=>{
+        if(S._pendingShareEv){const ev=S._pendingShareEv;S._pendingShareEv=null;openShare(ev);}
+      });
+      await AdMob.showInterstitial();
+      return;
+    }catch(e){
+      console.warn('AdMob interstitial failed:',e);
+      // Fall through to HTML fallback
+    }
+  }
+  // HTML fallback (browser/testing only)
   _adCountdown=5;
   const el=document.getElementById('adInterstitial');
   const btn=document.getElementById('adCloseBtn');
@@ -1911,6 +1968,7 @@ function showAdInterstitial(){
     }
   },1000);
 }
+
 function closeAdInterstitial(){
   if(_adTimer){clearInterval(_adTimer);_adTimer=null;}
   document.getElementById('adInterstitial').classList.remove('show');
@@ -2024,6 +2082,7 @@ async function init(){
     }else{clearMatchState();}
   }
   requestWakeLock();
+  initAdMob();
 }
 function renderHomeActionCard(){
   const c=document.getElementById('homeActionCard');
