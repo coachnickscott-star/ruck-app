@@ -531,6 +531,9 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
           <div class="row" onclick="signOut()" style="cursor:pointer">
             <div style="color:var(--red);font-weight:500">Sign out</div>
           </div>
+          <div class="row" onclick="confirmDeleteAccount()" style="cursor:pointer">
+            <div style="color:var(--red);font-weight:500">Delete account</div>
+          </div>
         </div>
       </div>
       <div>
@@ -546,7 +549,17 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     </div>
   </div>
 
-  <!-- LOGIN PAGE (first use only) -->
+  <!-- Delete Account Confirmation Dialog -->
+<div class="dlg-overlay" id="dlg-delete-account">
+  <div class="dlg-box">
+    <div class="dlg-title">Delete Account</div>
+    <div class="dlg-sub">This will permanently delete your account and all associated data. This cannot be undone.</div>
+    <div class="dlg-btns">
+      <button class="dlg-cancel" onclick="document.getElementById('dlg-delete-account').classList.remove('show')">Cancel</button>
+      <button class="dlg-ok" style="background:var(--red)" onclick="deleteAccount()">Delete</button>
+    </div>
+  </div>
+</div>
   <div class="page" id="pg-login">
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 28px;max-width:400px;margin:0 auto;width:100%">
       <div style="text-align:center;margin-bottom:32px">
@@ -1089,6 +1102,32 @@ async function doAuth(){
 // Keep doLogin as alias for compatibility
 function doLogin(){doAuth();}
 
+function confirmDeleteAccount(){
+  document.getElementById('dlg-delete-account').classList.add('show');
+}
+async function deleteAccount(){
+  const dlg=document.getElementById('dlg-delete-account');
+  dlg.classList.remove('show');
+  const {data:{session}}=await supa.auth.getSession();
+  if(!session){alert('You must be signed in to delete your account.');return;}
+  try{
+    const res=await fetch(`${SUPA_URL}/functions/v1/delete-user`,{
+      method:'POST',
+      headers:{
+        'Authorization':`Bearer ${session.access_token}`,
+        'Content-Type':'application/json'
+      }
+    });
+    if(!res.ok){const t=await res.text();alert('Error deleting account: '+t);return;}
+    await supa.auth.signOut();
+    S.user='';
+    localStorage.removeItem('rk_user');
+    closePage('pg-settings');
+    openPage('pg-login');
+  }catch(e){
+    alert('Error deleting account. Please try again.');
+  }
+}
 async function signOut(){
   await supa.auth.signOut();
   S.user=null;
