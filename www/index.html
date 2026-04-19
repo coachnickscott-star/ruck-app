@@ -2133,7 +2133,7 @@ function renderHomeActionCard(){
   }
 }
 function requestWakeLock(){try{if('wakeLock' in navigator)navigator.wakeLock.request('screen');}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){S.ms=Date.now()-S.ts;updClock();}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){const now=Date.now();S.ms=now-S.ts;if(S._lastTick&&S.ycTimers&&S.ycTimers.length){const elapsed=now-S._lastTick;S.ycTimers.forEach(yc=>{yc.remainingMs=Math.max(0,yc.remainingMs-elapsed);});S.ycTimers=S.ycTimers.filter(yc=>yc.remainingMs>0);renderYCPills();}S._lastTick=now;updClock();}});
 init();
 </script>
 </body>
