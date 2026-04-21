@@ -601,8 +601,9 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     <div class="page-body">
       <div class="card">
         <div class="sec-hdr">Team Details</div>
-        <div class="field"><label>Team Name</label><input id="teTeamName" type="text" placeholder="e.g. Reading RFC 1st XV" maxlength="30"></div>
-        <div class="field"><label>League / Competition</label><input id="teLeague" type="text" placeholder="e.g. Counties 1 Southern North" maxlength="40"></div>
+        <div class="field"><label>Team Name</label><input id="teTeamName" type="text" list="rugbyTeamsList" placeholder="e.g. Reading RFC 1st XV" maxlength="50" autocomplete="off"></div>
+        <datalist id="rugbyTeamsList"></datalist>
+        <div class="field"><label>League / Competition</label><input id="teLeague" type="text" placeholder="e.g. Counties 1 Southern North" maxlength="60"></div>
       </div>
       <div class="card">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 18px 6px">
@@ -2152,10 +2153,164 @@ function openHelpPage(){openPage('pg-help');}
 function viewMatchTimeline(){const idx=S._selectedRecentMatchIdx;closeOvl('ovl-match-options');const h=loadHistory();if(h[idx]){const m=h[idx];gset('matchTitle','textContent',`${m.myTeam} vs ${m.opp}`);S.myTeam=m.myTeam;S.opp=m.opp;S.scFor=m.scFor;S.scAg=m.scAg;S.evs=m.evs||[];updScore();renderTl();openPage('pg-match');}}
 
 // ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// TEAM AUTOCOMPLETE
+// ════════════════════════════════════════════════════════
+const RUGBY_TEAMS=[
+  // Premiership
+  ["Bath Rugby","Premiership"],["Bristol Bears","Premiership"],["Exeter Chiefs","Premiership"],
+  ["Gloucester Rugby","Premiership"],["Harlequins","Premiership"],["Leicester Tigers","Premiership"],
+  ["Newcastle Falcons","Premiership"],["Northampton Saints","Premiership"],["Sale Sharks","Premiership"],
+  ["Saracens","Premiership"],
+  // Championship
+  ["Ampthill RFC","RFU Championship"],["Bedford Blues","RFU Championship"],["Caldy RFC","RFU Championship"],
+  ["Chinnor RFC","RFU Championship"],["Cornish Pirates","RFU Championship"],["Coventry RFC","RFU Championship"],
+  ["Doncaster Knights","RFU Championship"],["Ealing Trailfinders","RFU Championship"],
+  ["Hartpury RFC","RFU Championship"],["London Scottish","RFU Championship"],
+  ["Nottingham RFC","RFU Championship"],["Richmond RFC","RFU Championship"],["Worcester Warriors","RFU Championship"],
+  // National League 1
+  ["Bishop's Stortford RFC","National League 1"],["Blackheath RFC","National League 1"],
+  ["Dings Crusaders","National League 1"],["Esher RFC","National League 1"],
+  ["Plymouth Albion","National League 1"],["Rams RFC","National League 1"],
+  ["Rosslyn Park RFC","National League 1"],["Rotherham Titans","National League 1"],
+  ["Sale FC","National League 1"],["Sedgley Park RFC","National League 1"],
+  ["Tonbridge Juddians","National League 1"],["Clifton RFC","National League 1"],["Leeds Tykes","National League 1"],
+  // National League 2 East
+  ["Barnes RFC","National League 2 East"],["Bury St Edmunds RFC","National League 2 East"],
+  ["Canterbury RFC","National League 2 East"],["Colchester RFC","National League 2 East"],
+  ["Dorking RFC","National League 2 East"],["Guernsey RFC","National League 2 East"],
+  ["Havant RFC","National League 2 East"],["Henley RFC","National League 2 East"],
+  ["Old Albanians RFC","National League 2 East"],["Oxford Harlequins","National League 2 East"],
+  ["Sevenoaks RFC","National League 2 East"],["Westcombe Park RFC","National League 2 East"],
+  ["Worthing RFC","National League 2 East"],
+  // National League 2 West
+  ["Camborne RFC","National League 2 West"],["Cinderford RFC","National League 2 West"],
+  ["Devonport Services RFC","National League 2 West"],["Exeter University RFC","National League 2 West"],
+  ["Hinckley RFC","National League 2 West"],["Loughborough Students RFC","National League 2 West"],
+  ["Luctonians RFC","National League 2 West"],["Macclesfield RFC","National League 2 West"],
+  ["Old Redcliffians RFC","National League 2 West"],["Redruth RFC","National League 2 West"],
+  ["Taunton Titans","National League 2 West"],
+  // National League 2 North
+  ["Billingham RFC","National League 2 North"],["Chester RFC","National League 2 North"],
+  ["Fylde RFC","National League 2 North"],["Harrogate RFC","National League 2 North"],
+  ["Hull RFC","National League 2 North"],["Hull Ionians","National League 2 North"],
+  ["Lymm RFC","National League 2 North"],["Otley RFC","National League 2 North"],
+  ["Preston Grasshoppers","National League 2 North"],["Sheffield RFC","National League 2 North"],
+  ["Sheffield Tigers","National League 2 North"],["Tynedale RFC","National League 2 North"],
+  ["Wharfedale RFC","National League 2 North"],
+  // Regional 1 Midlands
+  ["Bournville RFC","Regional 1 Midlands"],["Newport RFC (Salop)","Regional 1 Midlands"],
+  ["Bromsgrove RFC","Regional 1 Midlands"],["Lutterworth RFC","Regional 1 Midlands"],
+  ["Stourbridge RFC","Regional 1 Midlands"],["Newent RFC","Regional 1 Midlands"],
+  ["Lichfield RFC","Regional 1 Midlands"],["Bridgnorth RFC","Regional 1 Midlands"],
+  ["Banbury RFC","Regional 1 Midlands"],["Drybrook RFC","Regional 1 Midlands"],
+  ["Dudley Kingswinford RFC","Regional 1 Midlands"],["Nuneaton RFC","Regional 1 Midlands"],
+  // Regional 1 North West
+  ["Rossendale RFC","Regional 1 North West"],["Anselmians RFC","Regional 1 North West"],
+  ["Wirral RFC","Regional 1 North West"],["Bowdon RFC","Regional 1 North West"],
+  ["Manchester RFC","Regional 1 North West"],["Blackburn RFC","Regional 1 North West"],
+  ["Birkenhead Park RFC","Regional 1 North West"],["Long Eaton RFC","Regional 1 North West"],
+  ["Stoke-on-Trent RFC","Regional 1 North West"],
+  // Regional 1 North East
+  ["Scunthorpe RFC","Regional 1 North East"],["Huddersfield RUFC","Regional 1 North East"],
+  ["Heath RFC","Regional 1 North East"],["York RFC","Regional 1 North East"],
+  ["Alnwick RFC","Regional 1 North East"],["Ilkley RFC","Regional 1 North East"],
+  ["Cleckheaton RFC","Regional 1 North East"],["Driffield RFC","Regional 1 North East"],
+  ["Sandal RFC","Regional 1 North East"],["Blaydon RFC","Regional 1 North East"],
+  ["Percy Park RFC","Regional 1 North East"],["Kendal RFC","Regional 1 North East"],
+  // Regional 1 South Central
+  ["Jersey RFC","Regional 1 South Central"],["London Scottish Lions","Regional 1 South Central"],
+  ["Tunbridge Wells RFC","Regional 1 South Central"],["Old Alleynians RFC","Regional 1 South Central"],
+  ["Bracknell RFC","Regional 1 South Central"],["Farnham RFC","Regional 1 South Central"],
+  ["Wimbledon RFC","Regional 1 South Central"],["Camberley RFC","Regional 1 South Central"],
+  ["Maidenhead RFC","Regional 1 South Central"],["Hammersmith & Fulham RFC","Regional 1 South Central"],
+  // Regional 1 South East
+  ["Amersham & Chiltern RFC","Regional 1 South East"],["Bedford Athletic RFC","Regional 1 South East"],
+  ["Harpenden RFC","Regional 1 South East"],["Hertford RFC","Regional 1 South East"],
+  ["Letchworth Garden City RFC","Regional 1 South East"],["North Walsham RFC","Regional 1 South East"],
+  ["Old Northamptonians RFC","Regional 1 South East"],["Oundle RFC","Regional 1 South East"],
+  ["Shelford RFC","Regional 1 South East"],["Southend Saxons RFC","Regional 1 South East"],
+  ["Sudbury RFC","Regional 1 South East"],["Tring RFC","Regional 1 South East"],
+  // Regional 1 South West
+  ["Brixham RFC","Regional 1 South West"],["Chew Valley RFC","Regional 1 South West"],
+  ["Exmouth RFC","Regional 1 South West"],["Launceston RFC","Regional 1 South West"],
+  ["Lydney RFC","Regional 1 South West"],["Marlborough RFC","Regional 1 South West"],
+  ["Matson RFC","Regional 1 South West"],["Royal Wootton Bassett RFC","Regional 1 South West"],
+  ["Sidmouth RFC","Regional 1 South West"],["St Austell RFC","Regional 1 South West"],
+  ["Topsham RFC","Regional 1 South West"],
+  // Regional 2 North
+  ["Northern RFC","Regional 2 North"],["Consett RFC","Regional 2 North"],
+  ["Sunderland RFC","Regional 2 North"],["Keswick RFC","Regional 2 North"],
+  ["West Hartlepool RFC","Regional 2 North"],["Morpeth RFC","Regional 2 North"],
+  ["Upper Eden RFC","Regional 2 North"],["Guisborough RFC","Regional 2 North"],
+  ["Durham City RFC","Regional 2 North"],["Aspatria RFC","Regional 2 North"],["Wigton RFC","Regional 2 North"],
+  // Regional 2 North West
+  ["Firwood Waterloo RFC","Regional 2 North West"],["Sandbach RFC","Regional 2 North West"],
+  ["Vale of Lune RFC","Regional 2 North West"],["Burnage RFC","Regional 2 North West"],
+  ["Douglas RFC (IOM)","Regional 2 North West"],["Altrincham Kersal RFC","Regional 2 North West"],
+  ["Northwich RFC","Regional 2 North West"],["Widnes RFC","Regional 2 North West"],
+  ["Winnington Park RFC","Regional 2 North West"],["Crewe & Nantwich RFC","Regional 2 North West"],
+  ["Eccles RFC","Regional 2 North West"],
+  // Regional 2 Anglia
+  ["Westcliff RFC","Regional 2 Anglia"],["Eton Manor RFC","Regional 2 Anglia"],
+  ["Harlow RFC","Regional 2 Anglia"],["Brentwood RFC","Regional 2 Anglia"],
+  ["Wanstead RFC","Regional 2 Anglia"],["Wymondham RFC","Regional 2 Anglia"],
+  ["Chelmsford RFC","Regional 2 Anglia"],["Woodford RFC","Regional 2 Anglia"],
+  ["Rochford Hundred RFC","Regional 2 Anglia"],["Holt RFC","Regional 2 Anglia"],["Stowmarket RFC","Regional 2 Anglia"],
+  // Regional 2 Thames
+  ["H.A.C. RFC","Regional 2 Thames"],["Belsize Park RFC","Regional 2 Thames"],
+  ["Beaconsfield RFC","Regional 2 Thames"],["London Irish Wild Geese","Regional 2 Thames"],
+  ["Old Priorians RFC","Regional 2 Thames"],["Grasshoppers RFC","Regional 2 Thames"],
+  ["Teddington RFC","Regional 2 Thames"],["Marlow RFC","Regional 2 Thames"],
+  ["Aylesbury RFC","Regional 2 Thames"],["Hemel Hempstead RFC","Regional 2 Thames"],
+  ["Old Haberdashers RFC","Regional 2 Thames"],
+  // Regional 2 South Central
+  ["Bournemouth RFC","Regional 2 South Central"],["Tottonians RFC","Regional 2 South Central"],
+  ["Winchester RFC","Regional 2 South Central"],["Wimborne RFC","Regional 2 South Central"],
+  ["Petersfield RFC","Regional 2 South Central"],["Chobham RFC","Regional 2 South Central"],
+  ["North Dorset RFC","Regional 2 South Central"],["Chichester RFC","Regional 2 South Central"],
+  ["Newbury Blues RFC","Regional 2 South Central"],
+  // Regional 2 South West
+  ["Weston-super-Mare RFC","Regional 2 South West"],["Tiverton RFC","Regional 2 South West"],
+  ["Wadebridge Camels RFC","Regional 2 South West"],["Okehampton RFC","Regional 2 South West"],
+  ["Crediton RFC","Regional 2 South West"],["Ivybridge RFC","Regional 2 South West"],
+  // Regional 2 Severn
+  ["Chippenham RFC","Regional 2 Severn"],["Trowbridge RFC","Regional 2 Severn"],
+  ["Keynsham RFC","Regional 2 Severn"],["Longlevens RFC","Regional 2 Severn"],
+  // Regional 2 Midlands West
+  ["Hereford RFC","Regional 2 Midlands West"],["Kidderminster RFC","Regional 2 Midlands West"],
+  ["Shrewsbury RFC","Regional 2 Midlands West"],["Ludlow RFC","Regional 2 Midlands West"],
+  ["Oswestry RFC","Regional 2 Midlands West"],
+  // Regional 2 Midlands North
+  ["Dronfield RFC","Regional 2 Midlands North"],["Melbourne RFC","Regional 2 Midlands North"],
+  ["Walsall RFC","Regional 2 Midlands North"],["West Bridgford RFC","Regional 2 Midlands North"],
+  ["Newark RFC","Regional 2 Midlands North"],["Ilkeston RFC","Regional 2 Midlands North"],
+  ["Paviors RFC","Regional 2 Midlands North"],["Old Saltleians RFC","Regional 2 Midlands North"],
+  // Regional 2 Midlands East
+  ["Northampton Old Scouts RFC","Regional 2 Midlands East"],
+  ["Market Harborough RFC","Regional 2 Midlands East"],["Olney RFC","Regional 2 Midlands East"],
+  ["Peterborough RFC","Regional 2 Midlands East"],["Oadby Wyggestonians RFC","Regional 2 Midlands East"],
+  ["Broadstreet RFC","Regional 2 Midlands East"],["Wellingborough RFC","Regional 2 Midlands East"]
+];
+
+function initTeamAutocomplete(){
+  const dl=document.getElementById('rugbyTeamsList');
+  if(!dl)return;
+  const frag=document.createDocumentFragment();
+  RUGBY_TEAMS.forEach(([name])=>{const o=document.createElement('option');o.value=name;frag.appendChild(o);});
+  dl.appendChild(frag);
+  document.getElementById('teTeamName').addEventListener('change',e=>{
+    const v=e.target.value.trim().toLowerCase();
+    const match=RUGBY_TEAMS.find(([n])=>n.toLowerCase()===v);
+    if(match){const lf=document.getElementById('teLeague');if(!lf.value)lf.value=match[1];}
+  });
+}
+
 // INIT
 // ════════════════════════════════════════════════════════
 async function init(){
   load();
+  initTeamAutocomplete();
   renderHomeActionCard();
   renderTeamListHome();
   renderRecentMatches();renderUpcomingMatches();
