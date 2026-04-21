@@ -1993,8 +1993,8 @@ async function showAdInterstitial(){
   _adCountdown=5;
   const el=document.getElementById('adInterstitial');
   const btn=document.getElementById('adCloseBtn');
+  btn.innerHTML='Skip <span id="adCountdown">5</span>s';
   const cd=document.getElementById('adCountdown');
-  cd.textContent=_adCountdown;
   btn.disabled=true;btn.style.opacity='.4';
   el.classList.add('show');
   _adTimer=setInterval(()=>{
@@ -2003,7 +2003,7 @@ async function showAdInterstitial(){
     if(_adCountdown<=0){
       clearInterval(_adTimer);_adTimer=null;
       btn.disabled=false;btn.style.opacity='1';
-      btn.innerHTML='Close ×';
+      btn.textContent='Close ×';
     }
   },1000);
 }
