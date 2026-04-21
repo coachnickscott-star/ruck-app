@@ -540,6 +540,10 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         <div class="sg-hdr">About</div>
         <div class="card">
           <div class="row"><div>App Version</div><div style="font-size:14px;color:var(--lbl3)">1.3.0</div></div>
+          <div class="row" onclick="openHelpPage()" style="cursor:pointer">
+            <div style="color:var(--blue);font-weight:500">Help &amp; Guide</div>
+            <div class="team-item-chv">›</div>
+          </div>
           <div class="row" onclick="openPrivacyPage()" style="cursor:pointer">
             <div style="color:var(--blue);font-weight:500">Privacy Policy</div>
             <div class="team-item-chv">›</div>
@@ -844,6 +848,77 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 
       <h3>Contact</h3>
       <p>For any privacy questions or deletion requests, contact us at hello@rugbycoach.ai</p>
+    </div>
+  </div>
+
+  <!-- HELP PAGE -->
+  <div class="page" id="pg-help">
+    <div class="nav">
+      <button class="nb" onclick="closePage('pg-help')">← Back</button>
+      <div class="nav-title">Help &amp; Guide</div>
+      <div></div>
+    </div>
+    <div class="privacy-body">
+      <h2>Help &amp; Guide</h2>
+      <p>Everything you need to get the most out of RugbyCoach.AI — from setting up your squad to recording the final whistle.</p>
+
+      <h3>Quick Start</h3>
+      <p>Tap <strong>Start Match</strong> on the home screen to jump straight into a new game. You'll be taken through a short setup — choose teams, pick a half duration, and away you go. If you want named players and kickers, set your squad up first (see <em>Your Teams</em> below).</p>
+
+      <h3>Your Teams</h3>
+      <p>Tap <strong>Teams</strong> on the home screen to create and manage your squads. Each team can hold a full squad of named players. Numbers 1–15 correspond to the standard rugby positions (1 Loosehead Prop → 15 Fullback), with space for replacements beyond that.</p>
+      <p>Within a team, mark one or more players as your designated <strong>kicker</strong>. This means their name will auto-appear in the conversion and penalty goal dialogs during a match, saving you time in the heat of the game.</p>
+
+      <h3>Setting Up a Match</h3>
+      <p><strong>Home / Away</strong> — select which team is playing at home and which is the visitor. This determines which team sheet opens when you log a scorer.</p>
+      <p><strong>Half Duration</strong> — choose the length of each half to match your competition format:</p>
+      <p>40 min — Adult (15s) · 35 min — U18 · 30 min — U16 · 25 min — U14 · 20 min — U12 · 7 min — Sevens · 10 min — Tens</p>
+      <p><strong>Count Direction</strong> — <em>Count up</em> starts at 0:00 and counts to the half duration; <em>Count down</em> starts at the half duration and counts to 0:00. Use whichever your touchline assistants prefer.</p>
+      <p>You can set your preferred defaults for direction and duration in <strong>Settings → Match Defaults</strong> so they're pre-selected every time.</p>
+
+      <h3>The Match Screen</h3>
+      <p>The large central timer shows the current match time. Tap <strong>▶ Start</strong> to begin the clock. The score for each team appears at the top — your team on the left, opponents on the right.</p>
+      <p>Use the <strong>+Try</strong>, <strong>+Con</strong>, <strong>+PG</strong>, <strong>+DG</strong>, and <strong>+PT</strong> buttons to record scoring events. Each button opens a quick dialog where you can select the scorer by number or name.</p>
+      <p>Tap the <strong>YC</strong> button to issue a yellow card (sin-bin). The player's name and a 10-minute countdown timer will appear on screen. Multiple sin-bins can run simultaneously.</p>
+      <p>When the half ends, tap <strong>Half Time</strong>. The app saves the first-half state and you can restart the clock for the second half when you're ready.</p>
+      <p>At the end of the match, tap <strong>Full Time</strong> to save the result to your match history.</p>
+
+      <h3>Scoring Events Explained</h3>
+      <p><strong>Try (+5 pts)</strong> — Awarded when a player grounds the ball over the opponent's try line. The most valuable single play in rugby. After a try you'll be prompted to attempt a conversion.</p>
+      <p><strong>Conversion (+2 pts)</strong> — A kick at goal taken from a line parallel to where the try was scored. Must be struck between the posts and over the crossbar. You have 90 seconds to take the kick.</p>
+      <p><strong>Penalty Goal (+3 pts)</strong> — A kick at goal awarded after a penalty offence (e.g. offside, collapsing a scrum, high tackle). The kicking team can choose to kick at goal, tap and run, or kick to the corner.</p>
+      <p><strong>Drop Goal (+3 pts)</strong> — Scored in open play by dropping the ball and kicking it as it bounces off the ground. Worth 3 points and can be attempted by any player at any time.</p>
+      <p><strong>Penalty Try (+7 pts)</strong> — Awarded by the referee when a certain try would have been scored had an offence not occurred. No conversion is attempted — the full 7 points are awarded automatically.</p>
+
+      <h3>Yellow Cards &amp; Sin-Bin</h3>
+      <p>Tap <strong>YC</strong> and select the offending player. A 10-minute sin-bin countdown will appear at the bottom of the match screen. The timer runs in sync with the match clock — it pauses when you pause the match and catches up correctly if you close and reopen the app.</p>
+      <p>Multiple yellow cards can be active at the same time (for different players). Each countdown runs independently and disappears automatically when the player's time is served.</p>
+      <p>A player who receives two yellow cards in the same match should be sent off — tap <strong>RC</strong> (red card) to record this instead.</p>
+
+      <h3>Half Time</h3>
+      <p>Tap <strong>Half Time</strong> when the first half ends. The clock stops and the first-half score is locked in. Teams swap ends — check that your home/away assignment still reflects which team is attacking which end if relevant to your notes.</p>
+      <p>Tap <strong>Start 2nd Half</strong> to restart the clock. Any sin-bin timers that were running at half time continue to run across the break correctly.</p>
+
+      <h3>Full Time &amp; Match History</h3>
+      <p>Tap <strong>Full Time</strong> to end the match. The final score, all scoring events, and the full timeline are saved to <strong>Match History</strong>. You can access your history from the home screen at any time.</p>
+      <p>Tap any saved match to view the full timeline — every try, kick, card, and the exact minute each event occurred.</p>
+
+      <h3>Sharing a Result</h3>
+      <p>From the match summary or history screen, tap the <strong>Share</strong> button to generate a results graphic. This creates a clean image of the final score and scorers that you can send directly to your club WhatsApp group, post on social media, or save to your camera roll.</p>
+
+      <h3>Fixtures</h3>
+      <p>You can import your team's fixture list directly from England Rugby. On englandrugby.com, find your team's page, tap <strong>Sync to calendar</strong>, choose <strong>Other</strong>, then copy the <em>webcal://</em> or <em>https://</em> link. Paste it into <strong>Settings → Fixtures</strong> and tap <strong>Import fixtures</strong>. Your upcoming matches will then appear on the home screen.</p>
+
+      <h3>Settings</h3>
+      <p><strong>Match Defaults</strong> — Set your preferred count direction and half duration so you don't have to change them each match.</p>
+      <p><strong>Fixtures</strong> — Paste your ICS calendar link from England Rugby to pull in your schedule.</p>
+      <p><strong>Account</strong> — View your login email, sign out, or permanently delete your account and all associated data.</p>
+
+      <h3>Tips</h3>
+      <p>• Name your kicker(s) in the team setup — the conversion dialog will pre-fill their name after every try, saving valuable seconds.</p>
+      <p>• Use <em>Count down</em> mode if your assistants are calling out time remaining rather than time elapsed.</p>
+      <p>• The app works fully offline. Match data is stored on your device — no internet connection is needed during a match.</p>
+      <p>• If you close the app mid-match (e.g. a phone call comes in), the timer catches up automatically when you reopen it.</p>
     </div>
   </div>
 
@@ -1297,7 +1372,7 @@ function renderSquadGrid(squad,inline){const g=document.getElementById(inline?'s
 function renderKickersList(kickers,inline){const c=document.getElementById(inline?'kickersListInline':'kickersList');if(kickers.length===0){c.innerHTML='';return;}c.innerHTML='<div style="padding:8px 0">'+kickers.map((k,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:.5px solid var(--sep);font-size:14px"><span>#${k.num} ${k.name}</span><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0" onclick="removeKicker(${i},${inline})">×</button></div>`).join('')+'</div>';}
 function removeKicker(idx,inline){if(inline){S._inlineTeamKickers.splice(idx,1);renderKickersListInline();}else{const t=S.teams.find(x=>x.id===S.editTeamId);if(t){t.kickers.splice(idx,1);renderKickersList(t.kickers,false);}}}
 function autoFillNums(){for(let i=1;i<=15;i++){const e=document.getElementById('sq_'+i);if(e)e.value='Player '+i;}}
-function autoFillInline(){for(let i=1;i<=15;i++){const e=document.getElementById('sq_'+i);if(e)e.value='Player '+i;}}
+function autoFillInline(){const g=document.getElementById('squadGridInline');for(let i=1;i<=15;i++){const e=g.querySelector('#sq_'+i);if(e)e.value='Player '+i;}}
 function openAddKickerDialog(){
   // Read squad from the edit form inputs
   const sq=[];for(let i=1;i<=23;i++){const nm=document.getElementById('sq_'+i).value.trim();if(nm)sq.push({num:i,name:nm});}
@@ -1330,9 +1405,9 @@ function onYCDurChange(){const v=document.getElementById('setupYC').value;docume
 function openTeamSheetForSetup(side){S.inlineSheetSide=side;if(side==='for'){const sel=document.getElementById('setupForSel');if(sel.value==='_other'){S._setupForTeamName=document.getElementById('setupForName').value.trim();}else if(sel.value){S._setupForTeamName=sel.options[sel.selectedIndex].text;}else{S._setupForTeamName='';}S._inlineTeamKickers=S._setupForTeamKickers||[];}else{const sel=document.getElementById('setupAgSel');if(sel.value==='_other'||!sel.value){S._setupAgTeamName=document.getElementById('setupAgName').value.trim();}else if(sel.value){S._setupAgTeamName=sel.options[sel.selectedIndex].text;}S._inlineTeamKickers=S._setupOppTeamKickers||[];}renderSquadGrid(side==='for'?S.mySquad:S.oppSquad,true);renderKickersListInline();const title=side==='for'?(S._setupForTeamName||'Home'):(S._setupAgTeamName||'Away');document.getElementById('sheetInlineTitle').textContent=title+' – Team Sheet';openPage('pg-sheet-inline');}
 function renderKickersListInline(){const c=document.getElementById('kickersListInline');if(!S._inlineTeamKickers||S._inlineTeamKickers.length===0){c.innerHTML='';return;}c.innerHTML='<div style="padding:8px 0">'+S._inlineTeamKickers.map((k,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:.5px solid var(--sep);font-size:14px"><span>#${k.num} ${k.name}</span><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0" onclick="removeKickerInline(${i})">×</button></div>`).join('')+'</div>';}
 function removeKickerInline(idx){S._inlineTeamKickers.splice(idx,1);renderKickersListInline();}
-function openAddKickerDialogInline(){S._addKickerMode='inline';const sq=[];for(let i=1;i<=23;i++){const nm=document.getElementById('sq_'+i).value.trim();if(nm)sq.push({num:i,name:nm});}if(sq.length===0){alert('Enter players first, then add kickers');return;}document.getElementById('addKickerGrid').innerHTML=sq.map(p=>`<button class="sc-btn" id="aisel_${p.num}" onclick="toggleKickerSelectInline(${p.num})">${p.num?`<div class="sc-n">${p.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${p.name||'Unnamed'}</div></button>`).join('');S._inlineSquadForKickers=sq;openOvl('ovl-add-kicker');}
+function openAddKickerDialogInline(){S._addKickerMode='inline';const sq=[];const _g=document.getElementById('squadGridInline');for(let i=1;i<=23;i++){const nm=(_g.querySelector('#sq_'+i)||{}).value?.trim()||'';if(nm)sq.push({num:i,name:nm});}if(sq.length===0){alert('Enter players first, then add kickers');return;}document.getElementById('addKickerGrid').innerHTML=sq.map(p=>`<button class="sc-btn" id="aisel_${p.num}" onclick="toggleKickerSelectInline(${p.num})">${p.num?`<div class="sc-n">${p.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${p.name||'Unnamed'}</div></button>`).join('');S._inlineSquadForKickers=sq;openOvl('ovl-add-kicker');}
 function toggleKickerSelectInline(num){toggleKickerSelect(num,true);}
-function saveSheetInline(){const squad=[];for(let i=1;i<=23;i++){const nm=document.getElementById('sq_'+i).value.trim();if(nm)squad.push({num:i,name:nm});}if(S.inlineSheetSide==='for'){S.mySquad=squad;S._setupForTeamKickers=S._inlineTeamKickers;}else{S.oppSquad=squad;S._setupOppTeamKickers=S._inlineTeamKickers;}closePage('pg-sheet-inline');}
+function saveSheetInline(){const squad=[];const _g=document.getElementById('squadGridInline');for(let i=1;i<=23;i++){const nm=(_g.querySelector('#sq_'+i)||{}).value?.trim()||'';if(nm)squad.push({num:i,name:nm});}if(S.inlineSheetSide==='for'){S.mySquad=squad;S._setupForTeamKickers=S._inlineTeamKickers;}else{S.oppSquad=squad;S._setupOppTeamKickers=S._inlineTeamKickers;}closePage('pg-sheet-inline');}
 
 function triggerSheetUpload(side){
   S.inlineSheetSide=side;
@@ -1993,8 +2068,8 @@ async function showAdInterstitial(){
   _adCountdown=5;
   const el=document.getElementById('adInterstitial');
   const btn=document.getElementById('adCloseBtn');
+  btn.innerHTML='Skip <span id="adCountdown">5</span>s';
   const cd=document.getElementById('adCountdown');
-  cd.textContent=_adCountdown;
   btn.disabled=true;btn.style.opacity='.4';
   el.classList.add('show');
   _adTimer=setInterval(()=>{
@@ -2003,7 +2078,7 @@ async function showAdInterstitial(){
     if(_adCountdown<=0){
       clearInterval(_adTimer);_adTimer=null;
       btn.disabled=false;btn.style.opacity='1';
-      btn.innerHTML='Close ×';
+      btn.textContent='Close ×';
     }
   },1000);
 }
@@ -2073,6 +2148,7 @@ function closeOvl(id){document.getElementById(id).classList.remove('show');}
 // PAGES
 // ════════────────────────────────────────────────────────
 function openPrivacyPage(){openPage('pg-privacy');}
+function openHelpPage(){openPage('pg-help');}
 function viewMatchTimeline(){const idx=S._selectedRecentMatchIdx;closeOvl('ovl-match-options');const h=loadHistory();if(h[idx]){const m=h[idx];gset('matchTitle','textContent',`${m.myTeam} vs ${m.opp}`);S.myTeam=m.myTeam;S.opp=m.opp;S.scFor=m.scFor;S.scAg=m.scAg;S.evs=m.evs||[];updScore();renderTl();openPage('pg-match');}}
 
 // ════════════════════════════════════════════════════════
@@ -2133,7 +2209,7 @@ function renderHomeActionCard(){
   }
 }
 function requestWakeLock(){try{if('wakeLock' in navigator)navigator.wakeLock.request('screen');}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){S.ms=Date.now()-S.ts;updClock();}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){const now=Date.now();S.ms=now-S.ts;if(S._lastTick&&S.ycTimers&&S.ycTimers.length){const elapsed=now-S._lastTick;S.ycTimers.forEach(yc=>{yc.remainingMs=Math.max(0,yc.remainingMs-elapsed);});S.ycTimers=S.ycTimers.filter(yc=>yc.remainingMs>0);renderYCPills();}S._lastTick=now;updClock();}});
 init();
 </script>
 </body>
