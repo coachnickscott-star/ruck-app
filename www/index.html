@@ -1691,13 +1691,12 @@ function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('
 function enableEvBtns(en){document.getElementById('b_try').disabled=!en;document.getElementById('b_pengoal').disabled=!en;document.getElementById('b_dropgoal').disabled=!en;document.getElementById('b_penaltytry').disabled=!en;}
 function tick(){
   const now=Date.now();
-  const delta=S._lastTick?Math.min(now-S._lastTick,500):0;
   S._lastTick=now;
   S.ms=now-S.ts;
-  if(delta>0&&S.ycTimers&&S.ycTimers.length){
-    S.ycTimers.forEach(yc=>{ yc.remainingMs=Math.max(0,yc.remainingMs-delta); });
-    S.ycTimers=S.ycTimers.filter(yc=>yc.remainingMs>0);
-    renderYCPills();
+  if(S.ycTimers&&S.ycTimers.length){
+    const prev=S.ycTimers.length;
+    S.ycTimers=S.ycTimers.filter(yc=>S.ms<yc.expiresAtMatchMs);
+    if(S.ycTimers.length!==prev||S.ycTimers.length>0)renderYCPills();
   }
   updClock();
 }
@@ -1987,7 +1986,7 @@ function logYC(){
   const label=playerName?`${playerName} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'';
   // Add timer
   if(!S.ycTimers)S.ycTimers=[];
-  S.ycTimers.push({id:Date.now(),side,playerNum:S.pendScorer,playerName:label,remainingMs:S.ycMins*60000});
+  S.ycTimers.push({id:Date.now(),side,playerNum:S.pendScorer,playerName:label,expiresAtMatchMs:S.ms+S.ycMins*60000});
   // Log timeline event
   const evLabel=label?`Yellow card — ${label}`:'Yellow card';
   S.evs.push({type:'yc',side,label:evLabel,pts:0,ts:S.ms});
@@ -2002,11 +2001,12 @@ function renderYCPills(){
     const timers=(S.ycTimers||[]).filter(t=>t.side===(side==='for'?'for':'against'));
     if(timers.length===0){el.innerHTML='';return;}
     el.innerHTML=timers.map(t=>{
-      const m=Math.floor(t.remainingMs/60000);
-      const s=Math.floor((t.remainingMs%60000)/1000);
+      const remaining=Math.max(0,t.expiresAtMatchMs-S.ms);
+      const m=Math.floor(remaining/60000);
+      const s=Math.floor((remaining%60000)/1000);
       const disp=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
       const name=t.playerName?`<span class="yc-pill-name">${t.playerName}</span>`:'';
-      return `<div class="yc-pill"><span class="yc-pill-time">${disp}</span></div>`;
+      return `<div class="yc-pill"><span class="yc-pill-time">${disp}</span>${name}</div>`;
     }).join('');
   });
 }
@@ -2264,7 +2264,9 @@ async function init(){
       S.dir=saved.dir;S.kickoffTeam=saved.kickoffTeam;S.mySquad=saved.mySquad||[];
       S.oppSquad=saved.oppSquad||[];S.myTeamKickers=saved.myTeamKickers||[];
       S.oppTeamKickers=saved.oppTeamKickers||[];S._fullTimeMode=false;S.halfMsOffset=saved.halfMsOffset||0;
-      S.ycTimers=saved.ycTimers||[];S.ycMins=saved.ycMins||10;S._lastTick=0;
+      S.ycMins=saved.ycMins||10;S._lastTick=0;
+      // Migrate old remainingMs format → expiresAtMatchMs tied to match clock
+      S.ycTimers=(saved.ycTimers||[]).map(yc=>yc.expiresAtMatchMs!==undefined?yc:{...yc,expiresAtMatchMs:saved.ms+(yc.remainingMs||0)});
       gset('matchTitle','textContent',`${S.myTeam} vs ${S.opp}`);
       gset('scoreMyName','textContent',S.myTeam);
       gset('scoreOppName','textContent',S.opp);
@@ -2296,7 +2298,7 @@ function renderHomeActionCard(){
   }
 }
 function requestWakeLock(){try{if('wakeLock' in navigator)navigator.wakeLock.request('screen');}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){const now=Date.now();S.ms=now-S.ts;if(S._lastTick&&S.ycTimers&&S.ycTimers.length){const elapsed=now-S._lastTick;S.ycTimers.forEach(yc=>{yc.remainingMs=Math.max(0,yc.remainingMs-elapsed);});S.ycTimers=S.ycTimers.filter(yc=>yc.remainingMs>0);renderYCPills();}S._lastTick=now;updClock();}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){const now=Date.now();S.ms=now-S.ts;S._lastTick=now;S.ycTimers=(S.ycTimers||[]).filter(yc=>S.ms<yc.expiresAtMatchMs);renderYCPills();updClock();}});
 init();
 </script>
 <div id="clubAcDrop"></div>
