@@ -448,6 +448,15 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 /* ────────────────────────────────────────────────────────────────────────────── */
 
 .mb8{margin-bottom:8px}
+
+/* ────────────────────────────────────────────────────────────────────────────── */
+/* CLUB AUTOCOMPLETE */
+/* ────────────────────────────────────────────────────────────────────────────── */
+
+#clubAcDrop{display:none;position:fixed;background:var(--card);border-radius:var(--r);box-shadow:0 8px 28px rgba(0,0,0,.18);z-index:999;max-height:260px;overflow-y:auto}
+.club-sug-item{padding:13px 18px;border-bottom:.5px solid var(--sep);font-size:16px;color:var(--lbl);cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
+.club-sug-item:last-child{border-bottom:none}
+.club-sug-item:active,.club-sug-item.pressed{background:var(--fill)}
 </style>
 </head>
 <body>
@@ -1132,6 +1141,10 @@ const SUPA_URL='https://nzjdyqugpapamxrfjara.supabase.co';
 const SUPA_KEY='sb_publishable_vEibrd8n5z_K2Fw4sIm15Q_bWCjGQOI';
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
 
+const TEAM_DB_URL='https://miojmtofhahqkdoabett.supabase.co';
+const TEAM_DB_KEY='sb_publishable_zfLZuuXVtsNyELFhqxothg_WllLlbm2';
+const teamDb=supabase.createClient(TEAM_DB_URL,TEAM_DB_KEY);
+
 let _authMode='login'; // 'login' or 'signup'
 
 function switchAuthTab(mode){
@@ -1397,7 +1410,7 @@ function saveTeam(){const name=document.getElementById('teTeamName').value.trim(
 // ════════════════════════════════════════════════════════
 // MATCH SETUP
 // ════════════════════════════════════════════════════════
-function renderSetupTeams(){const opts='<option value="">Choose a saved team\u2026</option>'+S.teams.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')+'<option value="_other">Other\u2026</option>';document.getElementById('setupForSel').innerHTML=opts;document.getElementById('setupAgSel').innerHTML=opts;}
+function renderSetupTeams(){const opts='<option value="">Choose a saved team\u2026</option>'+S.teams.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')+'<option value="_other">Search England clubs\u2026</option>';document.getElementById('setupForSel').innerHTML=opts;document.getElementById('setupAgSel').innerHTML=opts;}
 function onSetupTeamSelect(side,id){if(side==='for'){const nameRow=document.getElementById('setupForNameRow');if(id==='_other'){S._setupForTeamName='';S.mySquad=[];S._setupForTeamKickers=[];nameRow.style.display='';setTimeout(()=>document.getElementById('setupForName').focus(),50);return;}nameRow.style.display='none';if(!id){S._setupForTeamName='';S.mySquad=[];S._setupForTeamKickers=[];return;}const t=S.teams.find(x=>x.id===id);if(t){S._setupForTeamName=t.name;S.mySquad=JSON.parse(JSON.stringify(t.squad||[]));S._setupForTeamKickers=JSON.parse(JSON.stringify(t.kickers||[]));}}else if(side==='against'){const nameRow=document.getElementById('setupAgNameRow');if(id==='_other'){S._setupAgTeamName='';S.oppSquad=[];S._setupOppTeamKickers=[];nameRow.style.display='';setTimeout(()=>document.getElementById('setupAgName').focus(),50);return;}nameRow.style.display='none';if(!id){S._setupAgTeamName='';S.oppSquad=[];S._setupOppTeamKickers=[];return;}const t=S.teams.find(x=>x.id===id);if(t){S._setupAgTeamName=t.name;S.oppSquad=JSON.parse(JSON.stringify(t.squad||[]));S._setupOppTeamKickers=JSON.parse(JSON.stringify(t.kickers||[]));}}  }
 function handleKickoffToggle(side){const ckFor=document.getElementById('toggleFor').checked,ckAg=document.getElementById('toggleAg').checked;if(ckFor&&ckAg){if(side==='for')document.getElementById('toggleAg').checked=false;else document.getElementById('toggleFor').checked=false;}}
 function onHalfDurChange(){const v=document.getElementById('setupHalf').value;document.getElementById('customHalfRow').style.display=v==='custom'?'':'none';}
@@ -2152,6 +2165,63 @@ function openHelpPage(){openPage('pg-help');}
 function viewMatchTimeline(){const idx=S._selectedRecentMatchIdx;closeOvl('ovl-match-options');const h=loadHistory();if(h[idx]){const m=h[idx];gset('matchTitle','textContent',`${m.myTeam} vs ${m.opp}`);S.myTeam=m.myTeam;S.opp=m.opp;S.scFor=m.scFor;S.scAg=m.scAg;S.evs=m.evs||[];updScore();renderTl();openPage('pg-match');}}
 
 // ════════════════════════════════════════════════════════
+// CLUB AUTOCOMPLETE
+// ════════════════════════════════════════════════════════
+let _acTimer=null;
+let _acInput=null;
+
+function initClubAutocomplete(inputId){
+  const inp=document.getElementById(inputId);
+  if(!inp)return;
+  inp.addEventListener('input',function(){
+    clearTimeout(_acTimer);
+    const q=this.value.trim();
+    if(q.length<2){hideClubAc();return;}
+    _acTimer=setTimeout(()=>fetchClubAc(inp,q),300);
+  });
+  inp.addEventListener('blur',()=>setTimeout(hideClubAc,180));
+}
+
+async function fetchClubAc(inp,q){
+  const norm=q.toLowerCase();
+  try{
+    const{data,error}=await teamDb.from('team_search_index')
+      .select('display_name')
+      .ilike('normalized_name',`%${norm}%`)
+      .limit(8);
+    if(error||!data||!data.length){hideClubAc();return;}
+    renderClubAc(inp,data);
+  }catch(e){hideClubAc();}
+}
+
+function renderClubAc(inp,results){
+  const drop=document.getElementById('clubAcDrop');
+  if(!drop)return;
+  const rect=inp.getBoundingClientRect();
+  drop.style.cssText=`display:block;left:${rect.left}px;right:${window.innerWidth-rect.right}px;top:${rect.bottom+4}px`;
+  _acInput=inp;
+  drop.innerHTML=results.map((r,i)=>`<div class="club-sug-item" data-name="${r.display_name.replace(/"/g,'&quot;')}" onmousedown="pickClub(event,${i})" ontouchstart="this.classList.add('pressed')" ontouchend="pickClub(event,${i})">${r.display_name}</div>`).join('');
+}
+
+function pickClub(e,i){
+  e.preventDefault();
+  const items=document.querySelectorAll('#clubAcDrop .club-sug-item');
+  const name=items[i]?.dataset?.name;
+  if(name&&_acInput){
+    _acInput.value=name;
+    if(_acInput.id==='setupForName')S._setupForTeamName=name;
+    else if(_acInput.id==='setupAgName')S._setupAgTeamName=name;
+  }
+  hideClubAc();
+}
+
+function hideClubAc(){
+  const d=document.getElementById('clubAcDrop');
+  if(d)d.style.display='none';
+  _acInput=null;
+}
+
+// ════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════
 async function init(){
@@ -2198,6 +2268,8 @@ async function init(){
   }
   requestWakeLock();
   initAdMob();
+  initClubAutocomplete('setupForName');
+  initClubAutocomplete('setupAgName');
 }
 function renderHomeActionCard(){
   const c=document.getElementById('homeActionCard');
@@ -2212,5 +2284,6 @@ function requestWakeLock(){try{if('wakeLock' in navigator)navigator.wakeLock.req
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){const now=Date.now();S.ms=now-S.ts;if(S._lastTick&&S.ycTimers&&S.ycTimers.length){const elapsed=now-S._lastTick;S.ycTimers.forEach(yc=>{yc.remainingMs=Math.max(0,yc.remainingMs-elapsed);});S.ycTimers=S.ycTimers.filter(yc=>yc.remainingMs>0);renderYCPills();}S._lastTick=now;updClock();}});
 init();
 </script>
+<div id="clubAcDrop"></div>
 </body>
 </html>
