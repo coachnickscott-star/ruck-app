@@ -2179,7 +2179,8 @@ function initClubAutocomplete(inputId){
     if(q.length<2){hideClubAc();return;}
     _acTimer=setTimeout(()=>fetchClubAc(inp,q),300);
   });
-  inp.addEventListener('blur',()=>setTimeout(hideClubAc,180));
+  // Longer delay so pointerdown on a suggestion fires first
+  inp.addEventListener('blur',()=>setTimeout(hideClubAc,300));
 }
 
 async function fetchClubAc(inp,q){
@@ -2187,7 +2188,7 @@ async function fetchClubAc(inp,q){
   try{
     const{data,error}=await teamDb.from('team_search_index')
       .select('display_name')
-      .ilike('normalized_name',`%${norm}%`)
+      .or(`normalized_name.ilike.%${norm}%,display_name.ilike.%${norm}%`)
       .limit(8);
     if(error||!data||!data.length){hideClubAc();return;}
     renderClubAc(inp,data);
@@ -2198,9 +2199,22 @@ function renderClubAc(inp,results){
   const drop=document.getElementById('clubAcDrop');
   if(!drop)return;
   const rect=inp.getBoundingClientRect();
-  drop.style.cssText=`display:block;left:${rect.left}px;right:${window.innerWidth-rect.right}px;top:${rect.bottom+4}px`;
+  // Use visualViewport when available — correctly handles iOS keyboard
+  const vvh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+  const spaceBelow=vvh-rect.bottom-8;
+  const itemH=49;
+  const dropH=Math.min(220,results.length*itemH);
+  drop.style.position='fixed';
+  drop.style.left='14px';
+  drop.style.right='14px';
+  drop.style.maxHeight='220px';
+  drop.style.bottom='auto';
+  // Position below the field if room, otherwise above
+  drop.style.top=(spaceBelow>=100?rect.bottom+4:Math.max(8,rect.top-dropH-4))+'px';
   _acInput=inp;
-  drop.innerHTML=results.map((r,i)=>`<div class="club-sug-item" data-name="${r.display_name.replace(/"/g,'&quot;')}" onmousedown="pickClub(event,${i})" ontouchstart="this.classList.add('pressed')" ontouchend="pickClub(event,${i})">${r.display_name}</div>`).join('');
+  // onpointerdown fires before blur and e.preventDefault() keeps focus on input
+  drop.innerHTML=results.map((r,i)=>`<div class="club-sug-item" data-name="${r.display_name.replace(/"/g,'&quot;')}" onpointerdown="pickClub(event,${i})">${r.display_name}</div>`).join('');
+  drop.style.display='block';
 }
 
 function pickClub(e,i){
@@ -2211,6 +2225,7 @@ function pickClub(e,i){
     _acInput.value=name;
     if(_acInput.id==='setupForName')S._setupForTeamName=name;
     else if(_acInput.id==='setupAgName')S._setupAgTeamName=name;
+    _acInput.focus();
   }
   hideClubAc();
 }
