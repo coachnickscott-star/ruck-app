@@ -448,6 +448,15 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 /* ────────────────────────────────────────────────────────────────────────────── */
 
 .mb8{margin-bottom:8px}
+
+/* ────────────────────────────────────────────────────────────────────────────── */
+/* CLUB AUTOCOMPLETE */
+/* ────────────────────────────────────────────────────────────────────────────── */
+
+#clubAcDrop{display:none;position:fixed;background:var(--card);border-radius:var(--r);box-shadow:0 8px 28px rgba(0,0,0,.18);z-index:999;max-height:260px;overflow-y:auto}
+.club-sug-item{padding:13px 18px;border-bottom:.5px solid var(--sep);font-size:16px;color:var(--lbl);cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
+.club-sug-item:last-child{border-bottom:none}
+.club-sug-item:active,.club-sug-item.pressed{background:var(--fill)}
 </style>
 </head>
 <body>
@@ -540,6 +549,10 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
         <div class="sg-hdr">About</div>
         <div class="card">
           <div class="row"><div>App Version</div><div style="font-size:14px;color:var(--lbl3)">1.3.0</div></div>
+          <div class="row" onclick="openHelpPage()" style="cursor:pointer">
+            <div style="color:var(--blue);font-weight:500">Help &amp; Guide</div>
+            <div class="team-item-chv">›</div>
+          </div>
           <div class="row" onclick="openPrivacyPage()" style="cursor:pointer">
             <div style="color:var(--blue);font-weight:500">Privacy Policy</div>
             <div class="team-item-chv">›</div>
@@ -847,6 +860,77 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     </div>
   </div>
 
+  <!-- HELP PAGE -->
+  <div class="page" id="pg-help">
+    <div class="nav">
+      <button class="nb" onclick="closePage('pg-help')">← Back</button>
+      <div class="nav-title">Help &amp; Guide</div>
+      <div></div>
+    </div>
+    <div class="privacy-body">
+      <h2>Help &amp; Guide</h2>
+      <p>Everything you need to get the most out of RugbyCoach.AI — from setting up your squad to recording the final whistle.</p>
+
+      <h3>Quick Start</h3>
+      <p>Tap <strong>Start Match</strong> on the home screen to jump straight into a new game. You'll be taken through a short setup — choose teams, pick a half duration, and away you go. If you want named players and kickers, set your squad up first (see <em>Your Teams</em> below).</p>
+
+      <h3>Your Teams</h3>
+      <p>Tap <strong>Teams</strong> on the home screen to create and manage your squads. Each team can hold a full squad of named players. Numbers 1–15 correspond to the standard rugby positions (1 Loosehead Prop → 15 Fullback), with space for replacements beyond that.</p>
+      <p>Within a team, mark one or more players as your designated <strong>kicker</strong>. This means their name will auto-appear in the conversion and penalty goal dialogs during a match, saving you time in the heat of the game.</p>
+
+      <h3>Setting Up a Match</h3>
+      <p><strong>Home / Away</strong> — select which team is playing at home and which is the visitor. This determines which team sheet opens when you log a scorer.</p>
+      <p><strong>Half Duration</strong> — choose the length of each half to match your competition format:</p>
+      <p>40 min — Adult (15s) · 35 min — U18 · 30 min — U16 · 25 min — U14 · 20 min — U12 · 7 min — Sevens · 10 min — Tens</p>
+      <p><strong>Count Direction</strong> — <em>Count up</em> starts at 0:00 and counts to the half duration; <em>Count down</em> starts at the half duration and counts to 0:00. Use whichever your touchline assistants prefer.</p>
+      <p>You can set your preferred defaults for direction and duration in <strong>Settings → Match Defaults</strong> so they're pre-selected every time.</p>
+
+      <h3>The Match Screen</h3>
+      <p>The large central timer shows the current match time. Tap <strong>▶ Start</strong> to begin the clock. The score for each team appears at the top — your team on the left, opponents on the right.</p>
+      <p>Use the <strong>+Try</strong>, <strong>+Con</strong>, <strong>+PG</strong>, <strong>+DG</strong>, and <strong>+PT</strong> buttons to record scoring events. Each button opens a quick dialog where you can select the scorer by number or name.</p>
+      <p>Tap the <strong>YC</strong> button to issue a yellow card (sin-bin). The player's name and a 10-minute countdown timer will appear on screen. Multiple sin-bins can run simultaneously.</p>
+      <p>When the half ends, tap <strong>Half Time</strong>. The app saves the first-half state and you can restart the clock for the second half when you're ready.</p>
+      <p>At the end of the match, tap <strong>Full Time</strong> to save the result to your match history.</p>
+
+      <h3>Scoring Events Explained</h3>
+      <p><strong>Try (+5 pts)</strong> — Awarded when a player grounds the ball over the opponent's try line. The most valuable single play in rugby. After a try you'll be prompted to attempt a conversion.</p>
+      <p><strong>Conversion (+2 pts)</strong> — A kick at goal taken from a line parallel to where the try was scored. Must be struck between the posts and over the crossbar. You have 90 seconds to take the kick.</p>
+      <p><strong>Penalty Goal (+3 pts)</strong> — A kick at goal awarded after a penalty offence (e.g. offside, collapsing a scrum, high tackle). The kicking team can choose to kick at goal, tap and run, or kick to the corner.</p>
+      <p><strong>Drop Goal (+3 pts)</strong> — Scored in open play by dropping the ball and kicking it as it bounces off the ground. Worth 3 points and can be attempted by any player at any time.</p>
+      <p><strong>Penalty Try (+7 pts)</strong> — Awarded by the referee when a certain try would have been scored had an offence not occurred. No conversion is attempted — the full 7 points are awarded automatically.</p>
+
+      <h3>Yellow Cards &amp; Sin-Bin</h3>
+      <p>Tap <strong>YC</strong> and select the offending player. A 10-minute sin-bin countdown will appear at the bottom of the match screen. The timer runs in sync with the match clock — it pauses when you pause the match and catches up correctly if you close and reopen the app.</p>
+      <p>Multiple yellow cards can be active at the same time (for different players). Each countdown runs independently and disappears automatically when the player's time is served.</p>
+      <p>A player who receives two yellow cards in the same match should be sent off — tap <strong>RC</strong> (red card) to record this instead.</p>
+
+      <h3>Half Time</h3>
+      <p>Tap <strong>Half Time</strong> when the first half ends. The clock stops and the first-half score is locked in. Teams swap ends — check that your home/away assignment still reflects which team is attacking which end if relevant to your notes.</p>
+      <p>Tap <strong>Start 2nd Half</strong> to restart the clock. Any sin-bin timers that were running at half time continue to run across the break correctly.</p>
+
+      <h3>Full Time &amp; Match History</h3>
+      <p>Tap <strong>Full Time</strong> to end the match. The final score, all scoring events, and the full timeline are saved to <strong>Match History</strong>. You can access your history from the home screen at any time.</p>
+      <p>Tap any saved match to view the full timeline — every try, kick, card, and the exact minute each event occurred.</p>
+
+      <h3>Sharing a Result</h3>
+      <p>From the match summary or history screen, tap the <strong>Share</strong> button to generate a results graphic. This creates a clean image of the final score and scorers that you can send directly to your club WhatsApp group, post on social media, or save to your camera roll.</p>
+
+      <h3>Fixtures</h3>
+      <p>You can import your team's fixture list directly from England Rugby. On englandrugby.com, find your team's page, tap <strong>Sync to calendar</strong>, choose <strong>Other</strong>, then copy the <em>webcal://</em> or <em>https://</em> link. Paste it into <strong>Settings → Fixtures</strong> and tap <strong>Import fixtures</strong>. Your upcoming matches will then appear on the home screen.</p>
+
+      <h3>Settings</h3>
+      <p><strong>Match Defaults</strong> — Set your preferred count direction and half duration so you don't have to change them each match.</p>
+      <p><strong>Fixtures</strong> — Paste your ICS calendar link from England Rugby to pull in your schedule.</p>
+      <p><strong>Account</strong> — View your login email, sign out, or permanently delete your account and all associated data.</p>
+
+      <h3>Tips</h3>
+      <p>• Name your kicker(s) in the team setup — the conversion dialog will pre-fill their name after every try, saving valuable seconds.</p>
+      <p>• Use <em>Count down</em> mode if your assistants are calling out time remaining rather than time elapsed.</p>
+      <p>• The app works fully offline. Match data is stored on your device — no internet connection is needed during a match.</p>
+      <p>• If you close the app mid-match (e.g. a phone call comes in), the timer catches up automatically when you reopen it.</p>
+    </div>
+  </div>
+
   <!-- OVERLAYS -->
   <!-- Leave Match Dialog -->
   <div class="dlg-overlay" id="dlg-leave">
@@ -1056,6 +1140,10 @@ function loadMatchState(){
 const SUPA_URL='https://nzjdyqugpapamxrfjara.supabase.co';
 const SUPA_KEY='sb_publishable_vEibrd8n5z_K2Fw4sIm15Q_bWCjGQOI';
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+const TEAM_DB_URL='https://miojmtofhahqkdoabett.supabase.co';
+const TEAM_DB_KEY='sb_publishable_zfLZuuXVtsNyELFhqxothg_WllLlbm2';
+const teamDb=supabase.createClient(TEAM_DB_URL,TEAM_DB_KEY);
 
 let _authMode='login'; // 'login' or 'signup'
 
@@ -1297,7 +1385,7 @@ function renderSquadGrid(squad,inline){const g=document.getElementById(inline?'s
 function renderKickersList(kickers,inline){const c=document.getElementById(inline?'kickersListInline':'kickersList');if(kickers.length===0){c.innerHTML='';return;}c.innerHTML='<div style="padding:8px 0">'+kickers.map((k,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:.5px solid var(--sep);font-size:14px"><span>#${k.num} ${k.name}</span><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0" onclick="removeKicker(${i},${inline})">×</button></div>`).join('')+'</div>';}
 function removeKicker(idx,inline){if(inline){S._inlineTeamKickers.splice(idx,1);renderKickersListInline();}else{const t=S.teams.find(x=>x.id===S.editTeamId);if(t){t.kickers.splice(idx,1);renderKickersList(t.kickers,false);}}}
 function autoFillNums(){for(let i=1;i<=15;i++){const e=document.getElementById('sq_'+i);if(e)e.value='Player '+i;}}
-function autoFillInline(){for(let i=1;i<=15;i++){const e=document.getElementById('sq_'+i);if(e)e.value='Player '+i;}}
+function autoFillInline(){const g=document.getElementById('squadGridInline');for(let i=1;i<=15;i++){const e=g.querySelector('#sq_'+i);if(e)e.value='Player '+i;}}
 function openAddKickerDialog(){
   // Read squad from the edit form inputs
   const sq=[];for(let i=1;i<=23;i++){const nm=document.getElementById('sq_'+i).value.trim();if(nm)sq.push({num:i,name:nm});}
@@ -1322,7 +1410,7 @@ function saveTeam(){const name=document.getElementById('teTeamName').value.trim(
 // ════════════════════════════════════════════════════════
 // MATCH SETUP
 // ════════════════════════════════════════════════════════
-function renderSetupTeams(){const opts='<option value="">Choose a saved team\u2026</option>'+S.teams.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')+'<option value="_other">Other\u2026</option>';document.getElementById('setupForSel').innerHTML=opts;document.getElementById('setupAgSel').innerHTML=opts;}
+function renderSetupTeams(){const opts='<option value="">Choose a saved team\u2026</option>'+S.teams.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')+'<option value="_other">Search England clubs\u2026</option>';document.getElementById('setupForSel').innerHTML=opts;document.getElementById('setupAgSel').innerHTML=opts;}
 function onSetupTeamSelect(side,id){if(side==='for'){const nameRow=document.getElementById('setupForNameRow');if(id==='_other'){S._setupForTeamName='';S.mySquad=[];S._setupForTeamKickers=[];nameRow.style.display='';setTimeout(()=>document.getElementById('setupForName').focus(),50);return;}nameRow.style.display='none';if(!id){S._setupForTeamName='';S.mySquad=[];S._setupForTeamKickers=[];return;}const t=S.teams.find(x=>x.id===id);if(t){S._setupForTeamName=t.name;S.mySquad=JSON.parse(JSON.stringify(t.squad||[]));S._setupForTeamKickers=JSON.parse(JSON.stringify(t.kickers||[]));}}else if(side==='against'){const nameRow=document.getElementById('setupAgNameRow');if(id==='_other'){S._setupAgTeamName='';S.oppSquad=[];S._setupOppTeamKickers=[];nameRow.style.display='';setTimeout(()=>document.getElementById('setupAgName').focus(),50);return;}nameRow.style.display='none';if(!id){S._setupAgTeamName='';S.oppSquad=[];S._setupOppTeamKickers=[];return;}const t=S.teams.find(x=>x.id===id);if(t){S._setupAgTeamName=t.name;S.oppSquad=JSON.parse(JSON.stringify(t.squad||[]));S._setupOppTeamKickers=JSON.parse(JSON.stringify(t.kickers||[]));}}  }
 function handleKickoffToggle(side){const ckFor=document.getElementById('toggleFor').checked,ckAg=document.getElementById('toggleAg').checked;if(ckFor&&ckAg){if(side==='for')document.getElementById('toggleAg').checked=false;else document.getElementById('toggleFor').checked=false;}}
 function onHalfDurChange(){const v=document.getElementById('setupHalf').value;document.getElementById('customHalfRow').style.display=v==='custom'?'':'none';}
@@ -1330,9 +1418,9 @@ function onYCDurChange(){const v=document.getElementById('setupYC').value;docume
 function openTeamSheetForSetup(side){S.inlineSheetSide=side;if(side==='for'){const sel=document.getElementById('setupForSel');if(sel.value==='_other'){S._setupForTeamName=document.getElementById('setupForName').value.trim();}else if(sel.value){S._setupForTeamName=sel.options[sel.selectedIndex].text;}else{S._setupForTeamName='';}S._inlineTeamKickers=S._setupForTeamKickers||[];}else{const sel=document.getElementById('setupAgSel');if(sel.value==='_other'||!sel.value){S._setupAgTeamName=document.getElementById('setupAgName').value.trim();}else if(sel.value){S._setupAgTeamName=sel.options[sel.selectedIndex].text;}S._inlineTeamKickers=S._setupOppTeamKickers||[];}renderSquadGrid(side==='for'?S.mySquad:S.oppSquad,true);renderKickersListInline();const title=side==='for'?(S._setupForTeamName||'Home'):(S._setupAgTeamName||'Away');document.getElementById('sheetInlineTitle').textContent=title+' – Team Sheet';openPage('pg-sheet-inline');}
 function renderKickersListInline(){const c=document.getElementById('kickersListInline');if(!S._inlineTeamKickers||S._inlineTeamKickers.length===0){c.innerHTML='';return;}c.innerHTML='<div style="padding:8px 0">'+S._inlineTeamKickers.map((k,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:.5px solid var(--sep);font-size:14px"><span>#${k.num} ${k.name}</span><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:0" onclick="removeKickerInline(${i})">×</button></div>`).join('')+'</div>';}
 function removeKickerInline(idx){S._inlineTeamKickers.splice(idx,1);renderKickersListInline();}
-function openAddKickerDialogInline(){S._addKickerMode='inline';const sq=[];for(let i=1;i<=23;i++){const nm=document.getElementById('sq_'+i).value.trim();if(nm)sq.push({num:i,name:nm});}if(sq.length===0){alert('Enter players first, then add kickers');return;}document.getElementById('addKickerGrid').innerHTML=sq.map(p=>`<button class="sc-btn" id="aisel_${p.num}" onclick="toggleKickerSelectInline(${p.num})">${p.num?`<div class="sc-n">${p.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${p.name||'Unnamed'}</div></button>`).join('');S._inlineSquadForKickers=sq;openOvl('ovl-add-kicker');}
+function openAddKickerDialogInline(){S._addKickerMode='inline';const sq=[];const _g=document.getElementById('squadGridInline');for(let i=1;i<=23;i++){const nm=(_g.querySelector('#sq_'+i)||{}).value?.trim()||'';if(nm)sq.push({num:i,name:nm});}if(sq.length===0){alert('Enter players first, then add kickers');return;}document.getElementById('addKickerGrid').innerHTML=sq.map(p=>`<button class="sc-btn" id="aisel_${p.num}" onclick="toggleKickerSelectInline(${p.num})">${p.num?`<div class="sc-n">${p.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${p.name||'Unnamed'}</div></button>`).join('');S._inlineSquadForKickers=sq;openOvl('ovl-add-kicker');}
 function toggleKickerSelectInline(num){toggleKickerSelect(num,true);}
-function saveSheetInline(){const squad=[];for(let i=1;i<=23;i++){const nm=document.getElementById('sq_'+i).value.trim();if(nm)squad.push({num:i,name:nm});}if(S.inlineSheetSide==='for'){S.mySquad=squad;S._setupForTeamKickers=S._inlineTeamKickers;}else{S.oppSquad=squad;S._setupOppTeamKickers=S._inlineTeamKickers;}closePage('pg-sheet-inline');}
+function saveSheetInline(){const squad=[];const _g=document.getElementById('squadGridInline');for(let i=1;i<=23;i++){const nm=(_g.querySelector('#sq_'+i)||{}).value?.trim()||'';if(nm)squad.push({num:i,name:nm});}if(S.inlineSheetSide==='for'){S.mySquad=squad;S._setupForTeamKickers=S._inlineTeamKickers;}else{S.oppSquad=squad;S._setupOppTeamKickers=S._inlineTeamKickers;}closePage('pg-sheet-inline');}
 
 function triggerSheetUpload(side){
   S.inlineSheetSide=side;
@@ -1603,13 +1691,12 @@ function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('
 function enableEvBtns(en){document.getElementById('b_try').disabled=!en;document.getElementById('b_pengoal').disabled=!en;document.getElementById('b_dropgoal').disabled=!en;document.getElementById('b_penaltytry').disabled=!en;}
 function tick(){
   const now=Date.now();
-  const delta=S._lastTick?Math.min(now-S._lastTick,500):0;
   S._lastTick=now;
   S.ms=now-S.ts;
-  if(delta>0&&S.ycTimers&&S.ycTimers.length){
-    S.ycTimers.forEach(yc=>{ yc.remainingMs=Math.max(0,yc.remainingMs-delta); });
-    S.ycTimers=S.ycTimers.filter(yc=>yc.remainingMs>0);
-    renderYCPills();
+  if(S.ycTimers&&S.ycTimers.length){
+    const prev=S.ycTimers.length;
+    S.ycTimers=S.ycTimers.filter(yc=>S.ms<yc.expiresAtMatchMs);
+    if(S.ycTimers.length!==prev||S.ycTimers.length>0)renderYCPills();
   }
   updClock();
 }
@@ -1899,7 +1986,7 @@ function logYC(){
   const label=playerName?`${playerName} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'';
   // Add timer
   if(!S.ycTimers)S.ycTimers=[];
-  S.ycTimers.push({id:Date.now(),side,playerNum:S.pendScorer,playerName:label,remainingMs:S.ycMins*60000});
+  S.ycTimers.push({id:Date.now(),side,playerNum:S.pendScorer,playerName:label,expiresAtMatchMs:S.ms+S.ycMins*60000});
   // Log timeline event
   const evLabel=label?`Yellow card — ${label}`:'Yellow card';
   S.evs.push({type:'yc',side,label:evLabel,pts:0,ts:S.ms});
@@ -1914,11 +2001,12 @@ function renderYCPills(){
     const timers=(S.ycTimers||[]).filter(t=>t.side===(side==='for'?'for':'against'));
     if(timers.length===0){el.innerHTML='';return;}
     el.innerHTML=timers.map(t=>{
-      const m=Math.floor(t.remainingMs/60000);
-      const s=Math.floor((t.remainingMs%60000)/1000);
+      const remaining=Math.max(0,t.expiresAtMatchMs-S.ms);
+      const m=Math.floor(remaining/60000);
+      const s=Math.floor((remaining%60000)/1000);
       const disp=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
       const name=t.playerName?`<span class="yc-pill-name">${t.playerName}</span>`:'';
-      return `<div class="yc-pill"><span class="yc-pill-time">${disp}</span></div>`;
+      return `<div class="yc-pill"><span class="yc-pill-time">${disp}</span>${name}</div>`;
     }).join('');
   });
 }
@@ -1993,8 +2081,8 @@ async function showAdInterstitial(){
   _adCountdown=5;
   const el=document.getElementById('adInterstitial');
   const btn=document.getElementById('adCloseBtn');
+  btn.innerHTML='Skip <span id="adCountdown">5</span>s';
   const cd=document.getElementById('adCountdown');
-  cd.textContent=_adCountdown;
   btn.disabled=true;btn.style.opacity='.4';
   el.classList.add('show');
   _adTimer=setInterval(()=>{
@@ -2003,7 +2091,7 @@ async function showAdInterstitial(){
     if(_adCountdown<=0){
       clearInterval(_adTimer);_adTimer=null;
       btn.disabled=false;btn.style.opacity='1';
-      btn.innerHTML='Close ×';
+      btn.textContent='Close ×';
     }
   },1000);
 }
@@ -2073,7 +2161,80 @@ function closeOvl(id){document.getElementById(id).classList.remove('show');}
 // PAGES
 // ════════────────────────────────────────────────────────
 function openPrivacyPage(){openPage('pg-privacy');}
+function openHelpPage(){openPage('pg-help');}
 function viewMatchTimeline(){const idx=S._selectedRecentMatchIdx;closeOvl('ovl-match-options');const h=loadHistory();if(h[idx]){const m=h[idx];gset('matchTitle','textContent',`${m.myTeam} vs ${m.opp}`);S.myTeam=m.myTeam;S.opp=m.opp;S.scFor=m.scFor;S.scAg=m.scAg;S.evs=m.evs||[];updScore();renderTl();openPage('pg-match');}}
+
+// ════════════════════════════════════════════════════════
+// CLUB AUTOCOMPLETE
+// ════════════════════════════════════════════════════════
+let _acTimer=null;
+let _acInput=null;
+
+function initClubAutocomplete(inputId){
+  const inp=document.getElementById(inputId);
+  if(!inp)return;
+  inp.addEventListener('input',function(){
+    clearTimeout(_acTimer);
+    const q=this.value.trim();
+    if(q.length<2){hideClubAc();return;}
+    _acTimer=setTimeout(()=>fetchClubAc(inp,q),300);
+  });
+  // Longer delay so pointerdown on a suggestion fires first
+  inp.addEventListener('blur',()=>setTimeout(hideClubAc,300));
+}
+
+async function fetchClubAc(inp,q){
+  const norm=q.toLowerCase();
+  try{
+    const{data,error}=await teamDb.from('team_search_index')
+      .select('display_name')
+      .or(`normalized_name.ilike.%${norm}%,display_name.ilike.%${norm}%`)
+      .limit(8);
+    if(error||!data||!data.length){hideClubAc();return;}
+    renderClubAc(inp,data);
+  }catch(e){hideClubAc();}
+}
+
+function renderClubAc(inp,results){
+  const drop=document.getElementById('clubAcDrop');
+  if(!drop)return;
+  const rect=inp.getBoundingClientRect();
+  // Use visualViewport when available — correctly handles iOS keyboard
+  const vvh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+  const spaceBelow=vvh-rect.bottom-8;
+  const itemH=49;
+  const dropH=Math.min(220,results.length*itemH);
+  drop.style.position='fixed';
+  drop.style.left='14px';
+  drop.style.right='14px';
+  drop.style.maxHeight='220px';
+  drop.style.bottom='auto';
+  // Position below the field if room, otherwise above
+  drop.style.top=(spaceBelow>=100?rect.bottom+4:Math.max(8,rect.top-dropH-4))+'px';
+  _acInput=inp;
+  // onpointerdown fires before blur and e.preventDefault() keeps focus on input
+  drop.innerHTML=results.map((r,i)=>`<div class="club-sug-item" data-name="${r.display_name.replace(/"/g,'&quot;')}" onpointerdown="pickClub(event,${i})">${r.display_name}</div>`).join('');
+  drop.style.display='block';
+}
+
+function pickClub(e,i){
+  e.preventDefault();
+  const items=document.querySelectorAll('#clubAcDrop .club-sug-item');
+  const name=items[i]?.dataset?.name;
+  if(name&&_acInput){
+    _acInput.value=name;
+    if(_acInput.id==='setupForName')S._setupForTeamName=name;
+    else if(_acInput.id==='setupAgName')S._setupAgTeamName=name;
+    _acInput.focus();
+  }
+  hideClubAc();
+}
+
+function hideClubAc(){
+  const d=document.getElementById('clubAcDrop');
+  if(d)d.style.display='none';
+  _acInput=null;
+}
 
 // ════════════════════════════════════════════════════════
 // INIT
@@ -2103,7 +2264,9 @@ async function init(){
       S.dir=saved.dir;S.kickoffTeam=saved.kickoffTeam;S.mySquad=saved.mySquad||[];
       S.oppSquad=saved.oppSquad||[];S.myTeamKickers=saved.myTeamKickers||[];
       S.oppTeamKickers=saved.oppTeamKickers||[];S._fullTimeMode=false;S.halfMsOffset=saved.halfMsOffset||0;
-      S.ycTimers=saved.ycTimers||[];S.ycMins=saved.ycMins||10;S._lastTick=0;
+      S.ycMins=saved.ycMins||10;S._lastTick=0;
+      // Migrate old remainingMs format → expiresAtMatchMs tied to match clock
+      S.ycTimers=(saved.ycTimers||[]).map(yc=>yc.expiresAtMatchMs!==undefined?yc:{...yc,expiresAtMatchMs:saved.ms+(yc.remainingMs||0)});
       gset('matchTitle','textContent',`${S.myTeam} vs ${S.opp}`);
       gset('scoreMyName','textContent',S.myTeam);
       gset('scoreOppName','textContent',S.opp);
@@ -2122,6 +2285,8 @@ async function init(){
   }
   requestWakeLock();
   initAdMob();
+  initClubAutocomplete('setupForName');
+  initClubAutocomplete('setupAgName');
 }
 function renderHomeActionCard(){
   const c=document.getElementById('homeActionCard');
@@ -2133,8 +2298,9 @@ function renderHomeActionCard(){
   }
 }
 function requestWakeLock(){try{if('wakeLock' in navigator)navigator.wakeLock.request('screen');}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){S.ms=Date.now()-S.ts;updClock();}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.running){const now=Date.now();S.ms=now-S.ts;S._lastTick=now;S.ycTimers=(S.ycTimers||[]).filter(yc=>S.ms<yc.expiresAtMatchMs);renderYCPills();updClock();}});
 init();
 </script>
+<div id="clubAcDrop"></div>
 </body>
 </html>
