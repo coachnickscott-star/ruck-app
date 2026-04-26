@@ -807,7 +807,10 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
     <div class="tl-card">
       <div class="tl-hdr">
         <div class="tl-title">Timeline</div>
-        <button style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit" onclick="scrollToTimeline()">Latest</button>
+        <div style="display:flex;gap:12px;align-items:center">
+          <button id="undoBtn" style="background:none;border:none;color:var(--red);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:none" onclick="undoLastEvent()">↩ Undo</button>
+          <button style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit" onclick="scrollToTimeline()">Latest</button>
+        </div>
       </div>
       <div id="tlBody"></div>
     </div>
@@ -1157,6 +1160,7 @@ const S = {
   // Pending scoring flow
   pendType: null, pendSide: null, pendScorer: null, pendKicker: null,
   selScorerNum: null, selKickerNum: null,
+  lastKickerFor: null, lastKickerAg: null,
   whoTeamSelected: null,
   // Half time
   htMs: 0, htTimer: null,
@@ -1185,7 +1189,7 @@ function saveHistory(m) {
 }
 function loadHistory() { try{return JSON.parse(localStorage.getItem('rk_hist2')||'[]');}catch(e){return[];} }
 function saveMatchState(){
-  const ms={myTeam:S.myTeam,opp:S.opp,scFor:S.scFor,scAg:S.scAg,evs:S.evs,half:S.half,ms:S.ms,ts:S.ts,running:S.running,halfMins:S.halfMins,dir:S.dir,kickoffTeam:S.kickoffTeam,mySquad:S.mySquad,oppSquad:S.oppSquad,myTeamKickers:S.myTeamKickers,oppTeamKickers:S.oppTeamKickers,_fullTimeMode:S._fullTimeMode,ycTimers:S.ycTimers||[],ycMins:S.ycMins||10,halfMsOffset:S.halfMsOffset||0};
+  const ms={myTeam:S.myTeam,opp:S.opp,scFor:S.scFor,scAg:S.scAg,evs:S.evs,half:S.half,ms:S.ms,ts:S.ts,running:S.running,halfMins:S.halfMins,dir:S.dir,kickoffTeam:S.kickoffTeam,mySquad:S.mySquad,oppSquad:S.oppSquad,myTeamKickers:S.myTeamKickers,oppTeamKickers:S.oppTeamKickers,_fullTimeMode:S._fullTimeMode,ycTimers:S.ycTimers||[],ycMins:S.ycMins||10,halfMsOffset:S.halfMsOffset||0,lastKickerFor:S.lastKickerFor||null,lastKickerAg:S.lastKickerAg||null};
   localStorage.setItem('rk_match_state',JSON.stringify(ms));
 }
 function clearMatchState(){localStorage.removeItem('rk_match_state');}
@@ -1886,8 +1890,8 @@ function resolveConv(success){S._convSuccessful=success;if(success===null){S.pen
 function confirmKicker(){S.pendKicker=S.selKickerNum||null;closeOvl('ovl-kicker');logScore();}
 function skipKicker(){S.pendKicker=null;closeOvl('ovl-kicker');logScore();}
 function backFromKicker(){closeOvl('ovl-kicker');if(S._whoKickerOnly){openWhoSheet(false,false,true);}}
-function openTryConvSheet(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const sp=S.pendScorer?sq.find(x=>x.num===S.pendScorer):null;document.getElementById('convScorerName').textContent=sp?`${sp.name} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'Not recorded';document.getElementById('convKickerConfirmBtn').style.display='none';S.selKickerNum=null;const kickers=S.pendSide==='for'?S.myTeamKickers:S.oppTeamKickers;const g=document.getElementById('convKickerGrid');g.innerHTML='';if(kickers&&kickers.length>0){g.style.display='grid';g.innerHTML='<div style="grid-column:1/-1;padding:4px 0 8px;font-size:12px;color:var(--lbl3);text-align:center">Saved kickers:</div>'+kickers.map(k=>`<button class="sc-btn" id="convk_${k.num}" onclick="selectConvKicker(${k.num},this)">${k.num?`<div class="sc-n">${k.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${k.name||'Unnamed'}</div></button>`).join('')+'<button class="sc-btn" style="grid-column:1/-1;margin:4px 0 0" onclick="buildConvKickerGrid()">All players →</button>';}else{buildConvKickerGrid();}openOvl('ovl-conv');}
-function buildConvKickerGrid(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const g=document.getElementById('convKickerGrid');g.innerHTML='';S.selKickerNum=null;document.getElementById('convKickerConfirmBtn').style.display='none';if(!sq||sq.length===0){g.style.display='grid';for(let i=1;i<=23;i++){const b=document.createElement('button');b.className='sc-btn';b.id='convk_'+i;b.innerHTML=`<div class="sc-n">${i}</div>`;b.onclick=()=>{selectConvKicker(i,b);};g.appendChild(b);}return;}g.style.display='grid';sq.forEach(p=>{const b=document.createElement('button');b.className='sc-btn';b.id='convk_'+p.num;b.innerHTML=`<div class="sc-n">${p.num||'—'}</div><div class="sc-nm">${p.name||'Unnamed'}</div>`;b.onclick=()=>{selectConvKicker(p.num,b);};g.appendChild(b);});}
+function openTryConvSheet(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const sp=S.pendScorer?sq.find(x=>x.num===S.pendScorer):null;document.getElementById('convScorerName').textContent=sp?`${sp.name} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'Not recorded';document.getElementById('convKickerConfirmBtn').style.display='none';S.selKickerNum=null;const kickers=S.pendSide==='for'?S.myTeamKickers:S.oppTeamKickers;const g=document.getElementById('convKickerGrid');g.innerHTML='';if(kickers&&kickers.length>0){g.style.display='grid';g.innerHTML='<div style="grid-column:1/-1;padding:4px 0 8px;font-size:12px;color:var(--lbl3);text-align:center">Saved kickers:</div>'+kickers.map(k=>`<button class="sc-btn" id="convk_${k.num}" onclick="selectConvKicker(${k.num},this)">${k.num?`<div class="sc-n">${k.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${k.name||'Unnamed'}</div></button>`).join('')+'<button class="sc-btn" style="grid-column:1/-1;margin:4px 0 0" onclick="buildConvKickerGrid()">All players →</button>';}else{buildConvKickerGrid();}preSelectLastKicker();openOvl('ovl-conv');}
+function buildConvKickerGrid(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const g=document.getElementById('convKickerGrid');g.innerHTML='';S.selKickerNum=null;document.getElementById('convKickerConfirmBtn').style.display='none';if(!sq||sq.length===0){g.style.display='grid';for(let i=1;i<=23;i++){const b=document.createElement('button');b.className='sc-btn';b.id='convk_'+i;b.innerHTML=`<div class="sc-n">${i}</div>`;b.onclick=()=>{selectConvKicker(i,b);};g.appendChild(b);}preSelectLastKicker();return;}g.style.display='grid';sq.forEach(p=>{const b=document.createElement('button');b.className='sc-btn';b.id='convk_'+p.num;b.innerHTML=`<div class="sc-n">${p.num||'—'}</div><div class="sc-nm">${p.name||'Unnamed'}</div>`;b.onclick=()=>{selectConvKicker(p.num,b);};g.appendChild(b);});preSelectLastKicker();}
 function selectConvKicker(num,el){document.querySelectorAll('#convKickerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');S.selKickerNum=num;document.getElementById('convKickerConfirmBtn').style.display='';}
 function confirmConvKicker(){S.pendKicker=S.selKickerNum||null;closeOvl('ovl-conv');openConvOutcomeSheet();}
 function skipConvKicker(){S.pendKicker=null;S._convSuccessful=null;closeOvl('ovl-conv');openTryConfirmSheet();}
@@ -1975,6 +1979,8 @@ function logScore(){
   }else if(S.pendType==='penaltytry'){
     shareEv={type:'penaltytry',side:S.pendSide,ts:S.ms};
   }
+  // Remember last kicker per side for pre-selection next time
+  if(S.pendKicker){if(S.pendSide==='for')S.lastKickerFor=S.pendKicker;else S.lastKickerAg=S.pendKicker;}
   const pType=S.pendType; // keep for reference before reset
   S.pendType=null;
   S.pendSide=null;
@@ -1988,7 +1994,11 @@ function logScore(){
   if(shareEv)S._pendingShareEv=shareEv;
 }
 function updScore(){const sf=document.getElementById('scoreFor');const sa=document.getElementById('scoreAg');if(!sf||!sa)return;sf.textContent=String(S.scFor);sa.textContent=String(S.scAg);}
-function renderTl(){const b=document.getElementById('tlBody');if(!b)return;if(S.evs.length===0){b.innerHTML='<div class="tl-empty">No events yet</div>';return;}b.innerHTML=S.evs.map((e,i)=>{let eventLabel='';let eventDot=e.side==='for'?'for':'ag';if(e.type==='try'){const scorerDisplay=e.scorerName?`${e.scorerName} (#${e.scorer})`:e.scorer?`#${e.scorer}`:'Unknown';eventLabel=`Try by ${scorerDisplay}`;}else if(e.type==='conversion'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion by ${kickerDisplay}`;}else if(e.type==='conversion-missed'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion missed by ${kickerDisplay}`;}else if(e.type==='pengoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Penalty goal by ${kickerDisplay}`;}else if(e.type==='dropgoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Drop goal by ${kickerDisplay}`;}else if(e.type==='penaltytry'){eventLabel='Penalty try';}else if(e.type==='yc'){eventLabel=e.label||'Yellow card';eventDot='yc';}else if(e.type==='sys'){eventLabel=e.txt||'System event';eventDot='sys';}return `<div class="tl-row"><div class="tl-dot ${eventDot}"></div><div class="tl-t">${fmtMs(e.ts)}</div><div class="tl-chip">${e.side==='for'?S.myTeam:e.side?S.opp:'Match'}</div><div class="tl-lbl">${eventLabel}</div><div class="tl-score">${e.pts?'+'+e.pts:'—'}</div></div>`;}).join('');}
+function renderTl(){const b=document.getElementById('tlBody');if(!b)return;if(S.evs.length===0){b.innerHTML='<div class="tl-empty">No events yet</div>';updUndoBtn();return;}b.innerHTML=S.evs.map((e,i)=>{let eventLabel='';let eventDot=e.side==='for'?'for':'ag';if(e.type==='try'){const scorerDisplay=e.scorerName?`${e.scorerName} (#${e.scorer})`:e.scorer?`#${e.scorer}`:'Unknown';eventLabel=`Try by ${scorerDisplay}`;}else if(e.type==='conversion'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion by ${kickerDisplay}`;}else if(e.type==='conversion-missed'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion missed by ${kickerDisplay}`;}else if(e.type==='pengoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Penalty goal by ${kickerDisplay}`;}else if(e.type==='dropgoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Drop goal by ${kickerDisplay}`;}else if(e.type==='penaltytry'){eventLabel='Penalty try';}else if(e.type==='yc'){eventLabel=e.label||'Yellow card';eventDot='yc';}else if(e.type==='sys'){eventLabel=e.txt||'System event';eventDot='sys';}return `<div class="tl-row"><div class="tl-dot ${eventDot}"></div><div class="tl-t">${fmtMs(e.ts)}</div><div class="tl-chip">${e.side==='for'?S.myTeam:e.side?S.opp:'Match'}</div><div class="tl-lbl">${eventLabel}</div><div class="tl-score">${e.pts?'+'+e.pts:'—'}</div></div>`;}).join('');updUndoBtn();}
+function updUndoBtn(){const btn=document.getElementById('undoBtn');if(!btn)return;const undoable=['try','conversion','conversion-missed','pengoal','dropgoal','penaltytry','yc'];const last=S.evs.length?S.evs[S.evs.length-1]:null;if(!last||!undoable.includes(last.type)){btn.style.display='none';return;}const labels={try:'↩ Undo try',conversion:'↩ Undo try','conversion-missed':'↩ Undo try',pengoal:'↩ Undo pen goal',dropgoal:'↩ Undo drop goal',penaltytry:'↩ Undo pen try',yc:'↩ Undo YC'};btn.textContent=labels[last.type]||'↩ Undo';btn.style.display='';}
+function undoLastEvent(){if(!S.evs.length)return;const last=S.evs[S.evs.length-1];if(last.type==='conversion'){if(last.side==='for')S.scFor-=2;else S.scAg-=2;S.evs.pop();if(S.evs.length&&S.evs[S.evs.length-1].type==='try'){const t=S.evs[S.evs.length-1];if(t.side==='for')S.scFor-=t.pts;else S.scAg-=t.pts;S.evs.pop();}}else if(last.type==='conversion-missed'){S.evs.pop();if(S.evs.length&&S.evs[S.evs.length-1].type==='try'){const t=S.evs[S.evs.length-1];if(t.side==='for')S.scFor-=t.pts;else S.scAg-=t.pts;S.evs.pop();}}else{const pts=last.pts||0;if(last.side==='for')S.scFor-=pts;else S.scAg-=pts;S.evs.pop();}updScore();renderTl();saveMatchState();}
+function preSelectLastKicker(){const lastKicker=S.pendSide==='for'?S.lastKickerFor:S.lastKickerAg;if(!lastKicker)return;const el=document.getElementById('convk_'+lastKicker);if(el){el.classList.add('sel');S.selKickerNum=lastKicker;document.getElementById('convKickerConfirmBtn').style.display='';}}
+function sysEv(txt){const e={type:'sys',txt:txt,ts:S.ms};S.evs.push(e);renderTl();}
 function sysEv(txt){const e={type:'sys',txt:txt,ts:S.ms};S.evs.push(e);renderTl();}
 function saveMatch(){const m={myTeam:S.myTeam,opp:S.opp,scFor:S.scFor,scAg:S.scAg,evs:S.evs,date:new Date().toLocaleDateString()};saveHistory(m);}
 
@@ -2341,7 +2351,7 @@ async function init(){
       S.dir=saved.dir;S.kickoffTeam=saved.kickoffTeam;S.mySquad=saved.mySquad||[];
       S.oppSquad=saved.oppSquad||[];S.myTeamKickers=saved.myTeamKickers||[];
       S.oppTeamKickers=saved.oppTeamKickers||[];S._fullTimeMode=false;S.halfMsOffset=saved.halfMsOffset||0;
-      S.ycMins=saved.ycMins||10;S._lastTick=0;
+      S.ycMins=saved.ycMins||10;S._lastTick=0;S.lastKickerFor=saved.lastKickerFor||null;S.lastKickerAg=saved.lastKickerAg||null;
       // Migrate old remainingMs format → expiresAtMatchMs tied to match clock
       S.ycTimers=(saved.ycTimers||[]).map(yc=>yc.expiresAtMatchMs!==undefined?yc:{...yc,expiresAtMatchMs:saved.ms+(yc.remainingMs||0)});
       gset('matchTitle','textContent',`${S.myTeam} vs ${S.opp}`);
