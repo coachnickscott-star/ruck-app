@@ -1675,6 +1675,7 @@ function startMatch() {
   closePage('pg-setup');
   openPage('pg-match');
   saveMatchState();
+  startMatchNotification();
 }
 
 function sBtn(id,txt,fn,dis){const b=document.getElementById(id);if(b){b.innerHTML=txt;if(fn!==undefined)b.onclick=fn;b.disabled=dis;}}
@@ -1684,10 +1685,10 @@ const PAUSE_ICON='<svg width="13" height="19" viewBox="0 0 13 19" style="display
 function handleMain(){if(!S.running){S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn',PAUSE_ICON,handleMain,false);gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent',S.half===1?'First half — in progress':'Second half — in progress');gset('matchHalfLbl','textContent',S.half===1?'1st half':'2nd half');const hb=document.getElementById('halfBtn');if(hb)hb.disabled=false;const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);// Kickoff event on very first start
 if(S.half===1&&S.ms===0&&S.evs.length===0){const koTeam=S.kickoffTeam==='for'?S.myTeam:S.opp;sysEv(`${koTeam} kicked off`);}
 }else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','▶',handleMain,false);gcls('timerDisp','remove','live');gcls('timerDisp','add','paused');gset('timerLbl','textContent','Paused');saveMatchState();}}
-function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;gcls('htBanner','add','show');gset('htTimerLbl','textContent','First half ended at');gset('htTimerDisp','textContent',fmtMs(S.ms));const mb=document.getElementById('mainBtn');if(mb)mb.disabled=true;enableEvBtns(false);saveMatchState();}else if(S.half===2){S._fullTimeMode=true;const tc=document.querySelector('.timer-ctrls');if(tc)tc.style.display='none';const sc=document.querySelector('.scoring-card');if(sc)sc.style.display='none';gset('timerLbl','textContent','Full time');gset('matchHalfLbl','textContent','');gcls('timerDisp','remove','live');gcls('timerDisp','remove','paused');gcls('ftBanner','add','show');gset('ftScore','textContent',`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`);const msb=document.getElementById('matchShareBtn');if(msb)msb.style.display='';saveMatch();clearMatchState();}}
+function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;gcls('htBanner','add','show');gset('htTimerLbl','textContent','First half ended at');gset('htTimerDisp','textContent',fmtMs(S.ms));const mb=document.getElementById('mainBtn');if(mb)mb.disabled=true;enableEvBtns(false);saveMatchState();updateMatchNotification();}else if(S.half===2){S._fullTimeMode=true;const tc=document.querySelector('.timer-ctrls');if(tc)tc.style.display='none';const sc=document.querySelector('.scoring-card');if(sc)sc.style.display='none';gset('timerLbl','textContent','Full time');gset('matchHalfLbl','textContent','');gcls('timerDisp','remove','live');gcls('timerDisp','remove','paused');gcls('ftBanner','add','show');gset('ftScore','textContent',`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`);const msb=document.getElementById('matchShareBtn');if(msb)msb.style.display='';saveMatch();clearMatchState();stopMatchNotification();}}
 function resumeFromHT(){if(S.dir==='up'){S.ms=S.halfMins*60000;S.halfMsOffset=S.halfMins*60000;}else{S.ms=0;S.halfMsOffset=0;}S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn',PAUSE_ICON,handleMain,false);gcls('htBanner','remove','show');gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent','Second half — in progress');gset('matchHalfLbl','textContent','2nd half');const hb=document.getElementById('halfBtn');if(hb){hb.innerHTML='FT';hb.disabled=false;}const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);// 2nd half kickoff — opposite team
 const koTeam2=S.kickoffTeam==='for'?S.opp:S.myTeam;sysEv(`${koTeam2} kicked off 2nd half`);saveMatchState();}
-function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('htBanner').classList.remove('show');document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();}
+function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('htBanner').classList.remove('show');document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();stopMatchNotification();}
 function enableEvBtns(en){document.getElementById('b_try').disabled=!en;document.getElementById('b_pengoal').disabled=!en;document.getElementById('b_dropgoal').disabled=!en;document.getElementById('b_penaltytry').disabled=!en;}
 function tick(){
   const now=Date.now();
@@ -1698,6 +1699,7 @@ function tick(){
     S.ycTimers=S.ycTimers.filter(yc=>S.ms<yc.expiresAtMatchMs);
     if(S.ycTimers.length!==prev||S.ycTimers.length>0)renderYCPills();
   }
+  if(now-_fgsLastUpdate>=1000){_fgsLastUpdate=now;updateMatchNotification();}
   updClock();
 }
 function updClock(){const td=document.getElementById('timerDisp');if(!td)return;const t=S.dir==='up'?S.ms:(S.halfMins*60000)-S.ms;const neg=t<0;const m=Math.floor((neg?-t:t)/60000),s=Math.floor(((neg?-t:t)%60000)/1000);const fmt=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');td.textContent=fmt;const card=document.querySelector('.timer-card');if(S.halfMins&&(S.ms-(S.halfMsOffset||0))>S.halfMins*60000){if(!td.classList.contains('negative')){td.classList.add('negative');if(card)card.classList.add('overtime');}if(S.dir==='down')td.classList.add('negative');}else{td.classList.remove('negative');if(card)card.classList.remove('overtime');}}
@@ -1908,6 +1910,7 @@ function logScore(){
   S.selKickerNum=null;
   showAdInterstitial();
   saveMatchState();
+  updateMatchNotification();
   if(shareEv)S._pendingShareEv=shareEv;
 }
 function updScore(){const sf=document.getElementById('scoreFor');const sa=document.getElementById('scoreAg');if(!sf||!sa)return;sf.textContent=String(S.scFor);sa.textContent=String(S.scAg);}
@@ -1993,6 +1996,7 @@ function logYC(){
   renderTl();
   renderYCPills();
   saveMatchState();
+  updateMatchNotification();
 }
 function renderYCPills(){
   ['for','ag'].forEach(side=>{
@@ -2041,6 +2045,88 @@ const ADMOB_INTERSTITIAL_ID='ca-app-pub-3642567250366576/2688600482';
 function getAdMob(){
   try{return window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.AdMob?window.Capacitor.Plugins.AdMob:null;}
   catch(e){return null;}
+}
+
+// ════════════════════════════════════════════════════════
+// ANDROID FOREGROUND SERVICE (lock screen match notification)
+// ════════════════════════════════════════════════════════
+const FGS_ID=1001;
+const FGS_BTN_PAUSE=1;
+const FGS_BTN_END=2;
+let _fgsActive=false;
+let _fgsLastUpdate=0;
+
+function getFGS(){
+  try{return window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.ForegroundService?window.Capacitor.Plugins.ForegroundService:null;}
+  catch(e){return null;}
+}
+
+function initForegroundService(){
+  const fgs=getFGS();
+  if(!fgs)return;
+  fgs.addListener('buttonClicked',e=>{
+    if(e.buttonId===FGS_BTN_PAUSE){handleMain();setTimeout(updateMatchNotification,100);}
+    else if(e.buttonId===FGS_BTN_END){fgs.moveToForeground().catch(()=>{});}
+  });
+  fgs.addListener('notificationTapped',()=>{fgs.moveToForeground().catch(()=>{});});
+}
+
+function buildFGSBody(){
+  const half=S.half===1?'1st':'2nd';
+  const t=S.dir==='up'?S.ms:(S.halfMins*60000)-S.ms;
+  const m=Math.floor(Math.abs(t)/60000);
+  const sec=Math.floor((Math.abs(t)%60000)/1000);
+  const time=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  const status=S.running?half+' half':'Paused';
+  return `${S.scFor} – ${S.scAg}  |  ${status}  ${time}`;
+}
+
+async function startMatchNotification(){
+  const fgs=getFGS();
+  if(!fgs)return;
+  try{
+    const perm=await fgs.checkPermissions();
+    if(perm.display!=='granted'){
+      const req=await fgs.requestPermissions();
+      if(req.display!=='granted')return;
+    }
+    await fgs.startForegroundService({
+      id:FGS_ID,
+      title:`${S.myTeam} vs ${S.opp}`,
+      body:buildFGSBody(),
+      smallIcon:'ic_notification',
+      silent:true,
+      buttons:[
+        {id:FGS_BTN_PAUSE,title:S.running?'⏸ Pause':'▶ Resume'},
+        {id:FGS_BTN_END,title:'End Match'}
+      ]
+    });
+    _fgsActive=true;
+  }catch(e){console.warn('FGS start:',e);}
+}
+
+async function updateMatchNotification(){
+  const fgs=getFGS();
+  if(!fgs||!_fgsActive)return;
+  try{
+    await fgs.updateForegroundService({
+      id:FGS_ID,
+      title:`${S.myTeam} vs ${S.opp}`,
+      body:buildFGSBody(),
+      smallIcon:'ic_notification',
+      silent:true,
+      buttons:[
+        {id:FGS_BTN_PAUSE,title:S.running?'⏸ Pause':'▶ Resume'},
+        {id:FGS_BTN_END,title:'End Match'}
+      ]
+    });
+  }catch(e){}
+}
+
+async function stopMatchNotification(){
+  const fgs=getFGS();
+  if(!fgs||!_fgsActive)return;
+  try{await fgs.stopForegroundService();_fgsActive=false;}catch(e){}
 }
 
 async function initAdMob(){
@@ -2285,6 +2371,7 @@ async function init(){
   }
   requestWakeLock();
   initAdMob();
+  initForegroundService();
   initClubAutocomplete('setupForName');
   initClubAutocomplete('setupAgName');
 }
