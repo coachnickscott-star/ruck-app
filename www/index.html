@@ -377,6 +377,15 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 .conv-ok{background:rgba(52,199,89,.12);color:#1a7a36}
 .conv-no{background:var(--fill);color:var(--lbl)}
 .conv-sk{background:transparent;color:var(--lbl3);font-size:13px;padding:10px;justify-content:center}
+.conv-seg-btn{flex:1;font-family:inherit;font-size:13px;font-weight:500;padding:11px 4px;border:none;border-radius:10px;background:var(--fill);color:var(--lbl3);cursor:pointer;transition:background .15s,color .15s;text-align:center}
+.conv-seg-succ{background:rgba(52,199,89,.18);color:#1a7a36}
+.conv-seg-fail{background:rgba(255,59,48,.1);color:var(--red)}
+.conv-seg-none{background:var(--fill2);color:var(--lbl)}
+.try-field{padding:10px 16px 8px}
+.try-field-lbl{font-size:11px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.try-select-wrap{position:relative}
+.try-select{width:100%;padding:13px 36px 13px 14px;font-size:16px;font-family:inherit;color:var(--lbl);background:var(--fill);border:none;border-radius:var(--r);-webkit-appearance:none;appearance:none;cursor:pointer;outline:none}
+.try-select-chv{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--lbl3);pointer-events:none;font-size:20px;line-height:1}
 .conv-pts{font-size:12px;font-weight:400;color:var(--lbl3)}
 
 /* ────────────────────────────────────────────────────────────────────────────── */
@@ -967,75 +976,38 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
   <div class="ovl" id="ovl-conv">
     <div class="sheet">
       <div class="sh-handle"></div>
-      <div class="sh-title">Conversion?</div>
-      <div class="sh-sub">Select the kicker</div>
-      <div class="sh-div"></div>
-      <div id="convScorerBanner" style="display:flex;align-items:center;justify-content:space-between;margin:0 12px 10px;padding:10px 14px;background:rgba(52,199,89,.1);border-radius:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
         <div>
-          <div style="font-size:10px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Try scorer</div>
-          <div id="convScorerName" style="font-size:15px;font-weight:600;color:var(--lbl)">—</div>
+          <div id="tryTeamLabel" style="font-size:17px;font-weight:700;color:var(--lbl)">—</div>
+          <div id="tryTimeLabel" style="font-size:12px;color:var(--lbl3);margin-top:2px">Try at —</div>
         </div>
-        <button onclick="editTryScorer()" style="font-family:inherit;font-size:13px;font-weight:500;color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 10px">Edit</button>
+        <div style="font-size:26px;font-weight:700;color:var(--green)">+5</div>
       </div>
-      <div class="scorer-grid" id="convKickerGrid"></div>
-      <button class="sc-confirm" id="convKickerConfirmBtn" onclick="confirmConvKicker()" style="display:none">Confirm</button>
-      <button class="sc-skip" onclick="skipConvKicker()">No attempt</button>
-      <button class="sc-back" onclick="backFromConvSheet()">← Back</button>
-    </div>
-  </div>
-
-  <div class="ovl" id="ovl-conv-outcome">
-    <div class="sheet">
-      <div class="sh-handle"></div>
-      <div class="sh-title">Conversion?</div>
-      <div class="sh-sub">Was it successful?</div>
       <div class="sh-div"></div>
-      <div style="margin:0 12px 12px;padding:10px 14px;background:var(--fill);border-radius:12px;display:flex;gap:16px">
-        <div style="flex:1">
-          <div style="font-size:10px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Try scorer</div>
-          <div id="convOutcomeScorerName" style="font-size:14px;font-weight:600;color:var(--lbl)">—</div>
-        </div>
-        <div style="flex:1">
-          <div style="font-size:10px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Kicker</div>
-          <div id="convOutcomeKickerName" style="font-size:14px;font-weight:600;color:var(--lbl)">—</div>
+      <div class="try-field">
+        <div class="try-field-lbl">Try scorer</div>
+        <div class="try-select-wrap">
+          <select id="tryScorerSel" class="try-select"></select>
+          <span class="try-select-chv">›</span>
         </div>
       </div>
-      <div class="conv-opts">
-        <button class="conv-btn conv-ok" onclick="selectConvOutcome(true)">Successful <span class="conv-pts">+2 pts</span></button>
-        <button class="conv-btn conv-no" onclick="selectConvOutcome(false)">Unsuccessful</button>
-      </div>
-      <button class="sc-back" onclick="backFromConvOutcome()">← Back</button>
-    </div>
-  </div>
-
-  <div class="ovl" id="ovl-try-confirm">
-    <div class="sheet">
-      <div class="sh-handle"></div>
-      <div class="sh-title">Confirm try</div>
-      <div class="sh-sub">Review and confirm</div>
-      <div class="sh-div"></div>
-      <div style="padding:0 12px;display:flex;flex-direction:column;gap:8px;margin-bottom:4px">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--fill);border-radius:12px">
-          <div>
-            <div style="font-size:10px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Try scorer</div>
-            <div id="tcScorerName" style="font-size:15px;font-weight:600;color:var(--lbl)">—</div>
-          </div>
-          <button onclick="editTryScorer()" style="font-family:inherit;font-size:13px;font-weight:500;color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 10px">Edit</button>
-        </div>
-        <div id="tcKickerRow" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--fill);border-radius:12px">
-          <div>
-            <div style="font-size:10px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Kicker</div>
-            <div id="tcKickerName" style="font-size:15px;font-weight:600;color:var(--lbl)">—</div>
-          </div>
-          <button onclick="editTryKicker()" style="font-family:inherit;font-size:13px;font-weight:500;color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 10px">Edit</button>
-        </div>
-        <div style="padding:12px 14px;background:var(--fill);border-radius:12px">
-          <div style="font-size:10px;font-weight:600;color:var(--lbl3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Conversion</div>
-          <div id="tcConvOutcome" style="font-size:15px;font-weight:600;color:var(--lbl)">—</div>
+      <div class="try-field" id="tryKickerRow">
+        <div class="try-field-lbl">Kicker</div>
+        <div class="try-select-wrap">
+          <select id="tryKickerSel" class="try-select"></select>
+          <span class="try-select-chv">›</span>
         </div>
       </div>
-      <button class="sc-confirm" onclick="confirmTryAll()" style="margin-top:12px">Log try</button>
-      <button class="sc-back" onclick="backFromTryConfirm()">← Back</button>
+      <div class="try-field" style="padding-bottom:16px">
+        <div class="try-field-lbl">Conversion</div>
+        <div style="display:flex;gap:7px">
+          <button id="convOptSucc" class="conv-seg-btn conv-seg-succ" onclick="setConvOpt('successful')">✓ Successful</button>
+          <button id="convOptFail" class="conv-seg-btn" onclick="setConvOpt('unsuccessful')">✗ Missed</button>
+          <button id="convOptNone" class="conv-seg-btn" onclick="setConvOpt('none')">No attempt</button>
+        </div>
+      </div>
+      <button class="sc-confirm" onclick="confirmTryAll()">Log try</button>
+      <button class="sc-back" onclick="closeOvl('ovl-conv')">← Back</button>
     </div>
   </div>
 
@@ -1861,8 +1833,8 @@ function scrollToTimeline(){
 // SCORING
 // ════════════════════════════════════════════════════════
 function beginScore(ty){S.pendType=ty;if(ty==='try'){S.pendTs=S.ms;S._convSuccessful=undefined;}if(ty==='penaltytry'){openWhoSheet(true,false,false);}else if(ty==='pengoal'||ty==='dropgoal'){openWhoSheet(false,false,true);}else{openWhoSheet(false,true,false);}}
-function openWhoSheet(teamOnly,showScorer,kickerOnly){S._whoTeamOnly=teamOnly;S._whoShowScorer=showScorer;S._whoKickerOnly=kickerOnly;const for_name=S.myTeam,ag_name=S.opp;document.getElementById('tpFor').textContent=for_name;document.getElementById('tpAg').textContent=ag_name;document.getElementById('whoTitle').textContent=kickerOnly?'Who took the kick?':teamOnly?'Penalty try — which team?':'Who scored?';document.getElementById('scorerGrid').style.display='none';document.getElementById('scorerGrid').innerHTML='';document.getElementById('whoConfirmBtn').style.display='none';document.getElementById('whoSkipBtn').style.display='none';document.getElementById('whoSub').textContent='Select team, then player';document.querySelector('.team-pick-row').style.display='';S.selScorerNum=null;S.whoTeamSelected=null;document.querySelectorAll('.tp-btn').forEach(b=>b.classList.remove('sel'));openOvl('ovl-who');}
-function setWhoTeam(side){S.whoTeamSelected=side;document.querySelectorAll('.tp-btn').forEach(b=>b.classList.remove('sel'));document.getElementById(side==='for'?'tpFor':'tpAg').classList.add('sel');const sq=side==='for'?S.mySquad:S.oppSquad;if(S._whoKickerOnly){S.pendSide=side;openKickerSheet(side);}else if(S._whoTeamOnly){confirmWho();}else{buildScorerGrid(sq,side);if(S.pendType==='try'){const teamName=side==='for'?S.myTeam:S.opp;document.querySelector('.team-pick-row').style.display='none';document.getElementById('whoSub').textContent=teamName+' — select scorer';}}}
+function openWhoSheet(teamOnly,showScorer,kickerOnly){S._whoTeamOnly=teamOnly;S._whoShowScorer=showScorer;S._whoKickerOnly=kickerOnly;const for_name=S.myTeam,ag_name=S.opp;document.getElementById('tpFor').textContent=for_name;document.getElementById('tpAg').textContent=ag_name;document.getElementById('whoTitle').textContent=kickerOnly?'Who took the kick?':teamOnly?'Penalty try — which team?':'Who scored?';document.getElementById('scorerGrid').style.display='none';document.getElementById('scorerGrid').innerHTML='';document.getElementById('whoConfirmBtn').style.display='none';document.getElementById('whoSkipBtn').style.display='none';document.getElementById('whoSub').textContent=S.pendType==='try'?'Select scoring team':'Select team, then player';document.querySelector('.team-pick-row').style.display='';S.selScorerNum=null;S.whoTeamSelected=null;document.querySelectorAll('.tp-btn').forEach(b=>b.classList.remove('sel'));openOvl('ovl-who');}
+function setWhoTeam(side){S.whoTeamSelected=side;document.querySelectorAll('.tp-btn').forEach(b=>b.classList.remove('sel'));document.getElementById(side==='for'?'tpFor':'tpAg').classList.add('sel');const sq=side==='for'?S.mySquad:S.oppSquad;if(S._whoKickerOnly){S.pendSide=side;openKickerSheet(side);}else if(S._whoTeamOnly){confirmWho();}else if(S.pendType==='try'){openTrySingleView(side);}else{buildScorerGrid(sq,side);}}
 function buildScorerGrid(sq,side){const g=document.getElementById('scorerGrid');g.innerHTML='';S.selScorerNum=null;document.getElementById('whoConfirmBtn').style.display='';document.getElementById('whoSkipBtn').style.display='';if(!sq||sq.length===0){g.style.display='grid';for(let i=1;i<=23;i++){const b=document.createElement('button');b.className='sc-btn';b.id='sc_'+i;b.innerHTML=`<div class="sc-n">${i}</div>`;b.onclick=()=>{document.querySelectorAll('#scorerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');S.selScorerNum=i;};g.appendChild(b);}return;}g.style.display='grid';sq.forEach(p=>{const b=document.createElement('button');b.className='sc-btn';b.id='sc_'+p.num;b.innerHTML=`<div class="sc-n">${p.num||'—'}</div><div class="sc-nm">${p.name||'Unnamed'}</div>`;b.onclick=()=>{document.querySelectorAll('#scorerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');S.selScorerNum=p.num;};g.appendChild(b);});}
 function buildKickerGrid(sq,side,mode){const g=document.getElementById('kickerGrid');g.innerHTML='';S.selKickerNum=null;if(!sq||sq.length===0){g.style.display='grid';for(let i=1;i<=23;i++){const b=document.createElement('button');b.className='sc-btn';b.id='kick_'+i;b.innerHTML=`<div class="sc-n">${i}</div>`;b.onclick=()=>{document.querySelectorAll('#kickerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');S.selKickerNum=i;};g.appendChild(b);}return;}g.style.display='grid';sq.forEach(p=>{const b=document.createElement('button');b.className='sc-btn';b.id='kick_'+p.num;b.innerHTML=`<div class="sc-n">${p.num||'—'}</div><div class="sc-nm">${p.name||'Unnamed'}</div>`;b.onclick=()=>{document.querySelectorAll('#kickerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');S.selKickerNum=p.num;};g.appendChild(b);});}
 function openKickerSheet(side){
@@ -1885,25 +1857,55 @@ function openKickerSheet(side){
   openOvl('ovl-kicker');
 }
 function selectKicker(num,el){document.querySelectorAll('#kickerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');S.selKickerNum=num;}
-function confirmWho(skip){if(!S.whoTeamSelected){alert('Select a team');return;}if(!skip&&!S._whoTeamOnly&&S._whoShowScorer&&S.selScorerNum===null){alert('Select a player or enter a number');return;}S.pendSide=S.whoTeamSelected;if(!S._whoTeamOnly)S.pendScorer=skip?null:S.selScorerNum;if(S.pendType==='yc'){closeOvl('ovl-who');logYC();return;}if(S.pendType==='penaltytry'){logScore();}else if(S.pendType==='try'){closeOvl('ovl-who');openTryConvSheet();}else{openKickerSheet(S.pendSide);}}
+function confirmWho(skip){if(!S.whoTeamSelected){alert('Select a team');return;}if(!skip&&!S._whoTeamOnly&&S._whoShowScorer&&S.selScorerNum===null){alert('Select a player or enter a number');return;}S.pendSide=S.whoTeamSelected;if(!S._whoTeamOnly)S.pendScorer=skip?null:S.selScorerNum;if(S.pendType==='yc'){closeOvl('ovl-who');logYC();return;}if(S.pendType==='penaltytry'){logScore();}else{openKickerSheet(S.pendSide);}}
 function resolveConv(success){S._convSuccessful=success;if(success===null){S.pendKicker=null;logScore();}else{openKickerSheet(S.pendSide);}}
 function confirmKicker(){S.pendKicker=S.selKickerNum||null;closeOvl('ovl-kicker');logScore();}
 function skipKicker(){S.pendKicker=null;closeOvl('ovl-kicker');logScore();}
 function backFromKicker(){closeOvl('ovl-kicker');if(S._whoKickerOnly){openWhoSheet(false,false,true);}}
-function openTryConvSheet(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const sp=S.pendScorer?sq.find(x=>x.num===S.pendScorer):null;document.getElementById('convScorerName').textContent=sp?`${sp.name} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'Not recorded';document.getElementById('convKickerConfirmBtn').style.display='none';S.selKickerNum=null;const kickers=S.pendSide==='for'?S.myTeamKickers:S.oppTeamKickers;const g=document.getElementById('convKickerGrid');g.innerHTML='';if(kickers&&kickers.length>0){g.style.display='grid';g.innerHTML='<div style="grid-column:1/-1;padding:4px 0 8px;font-size:12px;color:var(--lbl3);text-align:center">Saved kickers:</div>'+kickers.map(k=>`<button class="sc-btn" id="convk_${k.num}" onclick="selectConvKicker(${k.num},this)">${k.num?`<div class="sc-n">${k.num}</div>`:'<div class="sc-n" style="font-size:11px">−</div>'}<div class="sc-nm">${k.name||'Unnamed'}</div></button>`).join('')+'<button class="sc-btn" style="grid-column:1/-1;margin:4px 0 0" onclick="buildConvKickerGrid()">All players →</button>';}else{buildConvKickerGrid();}preSelectLastKicker();openOvl('ovl-conv');}
-function buildConvKickerGrid(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const g=document.getElementById('convKickerGrid');g.innerHTML='';S.selKickerNum=null;document.getElementById('convKickerConfirmBtn').style.display='none';if(!sq||sq.length===0){g.style.display='grid';for(let i=1;i<=23;i++){const b=document.createElement('button');b.className='sc-btn';b.id='convk_'+i;b.innerHTML=`<div class="sc-n">${i}</div>`;b.onclick=()=>{selectConvKicker(i,b);};g.appendChild(b);}preSelectLastKicker();return;}g.style.display='grid';sq.forEach(p=>{const b=document.createElement('button');b.className='sc-btn';b.id='convk_'+p.num;b.innerHTML=`<div class="sc-n">${p.num||'—'}</div><div class="sc-nm">${p.name||'Unnamed'}</div>`;b.onclick=()=>{selectConvKicker(p.num,b);};g.appendChild(b);});preSelectLastKicker();}
-function selectConvKicker(num,el){document.querySelectorAll('#convKickerGrid .sc-btn').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');S.selKickerNum=num;document.getElementById('convKickerConfirmBtn').style.display='';}
-function confirmConvKicker(){S.pendKicker=S.selKickerNum||null;closeOvl('ovl-conv');openConvOutcomeSheet();}
-function skipConvKicker(){S.pendKicker=null;S._convSuccessful=null;closeOvl('ovl-conv');openTryConfirmSheet();}
-function openConvOutcomeSheet(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const sp=S.pendScorer?sq.find(x=>x.num===S.pendScorer):null;const kp=S.pendKicker?sq.find(x=>x.num===S.pendKicker):null;document.getElementById('convOutcomeScorerName').textContent=sp?`${sp.name} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'Not recorded';document.getElementById('convOutcomeKickerName').textContent=kp?`${kp.name} (#${S.pendKicker})`:S.pendKicker?`#${S.pendKicker}`:'Not recorded';openOvl('ovl-conv-outcome');}
-function selectConvOutcome(success){S._convSuccessful=success;closeOvl('ovl-conv-outcome');openTryConfirmSheet();}
-function openTryConfirmSheet(){const sq=S.pendSide==='for'?S.mySquad:S.oppSquad;const sp=S.pendScorer?sq.find(x=>x.num===S.pendScorer):null;const kp=S.pendKicker?sq.find(x=>x.num===S.pendKicker):null;document.getElementById('tcScorerName').textContent=sp?`${sp.name} (#${S.pendScorer})`:S.pendScorer?`#${S.pendScorer}`:'Not recorded';document.getElementById('tcKickerName').textContent=kp?`${kp.name} (#${S.pendKicker})`:S.pendKicker?`#${S.pendKicker}`:'Not recorded';const ol=S._convSuccessful===true?'Successful (+2 pts)':S._convSuccessful===false?'Unsuccessful':'No attempt';document.getElementById('tcConvOutcome').textContent=ol;document.getElementById('tcKickerRow').style.display=S._convSuccessful===null?'none':'flex';openOvl('ovl-try-confirm');}
-function confirmTryAll(){logScore();}
-function editTryScorer(){closeOvl('ovl-conv');closeOvl('ovl-conv-outcome');closeOvl('ovl-try-confirm');openWhoSheet(false,true,false);if(S.pendSide){document.getElementById(S.pendSide==='for'?'tpFor':'tpAg').classList.add('sel');S.whoTeamSelected=S.pendSide;buildScorerGrid(S.pendSide==='for'?S.mySquad:S.oppSquad,S.pendSide);if(S.pendScorer){const el=document.getElementById('sc_'+S.pendScorer);if(el){el.classList.add('sel');S.selScorerNum=S.pendScorer;}}}}
-function editTryKicker(){closeOvl('ovl-try-confirm');closeOvl('ovl-conv-outcome');openTryConvSheet();}
-function backFromConvSheet(){editTryScorer();}
-function backFromConvOutcome(){closeOvl('ovl-conv-outcome');openOvl('ovl-conv');}
-function backFromTryConfirm(){closeOvl('ovl-try-confirm');if(S._convSuccessful===null){openOvl('ovl-conv');}else{openOvl('ovl-conv-outcome');}}
+function openTrySingleView(side){
+  S.pendSide=side;S._convOpt='successful';
+  const sq=side==='for'?S.mySquad:S.oppSquad;
+  const kickers=side==='for'?S.myTeamKickers:S.oppTeamKickers;
+  const lastKicker=side==='for'?S.lastKickerFor:S.lastKickerAg;
+  document.getElementById('tryTeamLabel').textContent=side==='for'?S.myTeam:S.opp;
+  document.getElementById('tryTimeLabel').textContent='Try at '+fmtMs(S.pendTs!=null?S.pendTs:S.ms);
+  // Scorer dropdown
+  const ss=document.getElementById('tryScorerSel');
+  ss.innerHTML='<option value="">Not recorded</option>';
+  (sq&&sq.length>0?sq:Array.from({length:23},(_,i)=>({num:i+1,name:''}))).forEach(p=>{const o=document.createElement('option');o.value=p.num;o.textContent='#'+p.num+(p.name?' — '+p.name:'');ss.appendChild(o);});
+  // Kicker dropdown — saved kickers first, then rest of squad
+  const ks=document.getElementById('tryKickerSel');
+  ks.innerHTML='<option value="">Not recorded</option>';
+  const hasSavedKickers=kickers&&kickers.length>0;
+  const squadForKicker=sq&&sq.length>0?sq:Array.from({length:23},(_,i)=>({num:i+1,name:''}));
+  if(hasSavedKickers){
+    kickers.forEach(p=>{const o=document.createElement('option');o.value=p.num;o.textContent='#'+p.num+(p.name?' — '+p.name:'');ks.appendChild(o);});
+    const others=squadForKicker.filter(p=>!kickers.find(k=>k.num===p.num));
+    if(others.length){const sep=document.createElement('option');sep.disabled=true;sep.textContent='— Other players —';ks.appendChild(sep);others.forEach(p=>{const o=document.createElement('option');o.value=p.num;o.textContent='#'+p.num+(p.name?' — '+p.name:'');ks.appendChild(o);});}
+  }else{
+    squadForKicker.forEach(p=>{const o=document.createElement('option');o.value=p.num;o.textContent='#'+p.num+(p.name?' — '+p.name:'');ks.appendChild(o);});
+  }
+  if(lastKicker)ks.value=String(lastKicker);
+  // Reset conversion UI — default Successful
+  document.getElementById('convOptSucc').className='conv-seg-btn conv-seg-succ';
+  document.getElementById('convOptFail').className='conv-seg-btn';
+  document.getElementById('convOptNone').className='conv-seg-btn';
+  document.getElementById('tryKickerRow').style.display='';
+  closeOvl('ovl-who');openOvl('ovl-conv');
+}
+function setConvOpt(opt){
+  S._convOpt=opt;
+  document.getElementById('convOptSucc').className='conv-seg-btn'+(opt==='successful'?' conv-seg-succ':'');
+  document.getElementById('convOptFail').className='conv-seg-btn'+(opt==='unsuccessful'?' conv-seg-fail':'');
+  document.getElementById('convOptNone').className='conv-seg-btn'+(opt==='none'?' conv-seg-none':'');
+  document.getElementById('tryKickerRow').style.display=opt==='none'?'none':'';
+}
+function confirmTryAll(){
+  S.pendScorer=parseInt(document.getElementById('tryScorerSel').value)||null;
+  if(S._convOpt==='none'){S._convSuccessful=null;S.pendKicker=null;}
+  else{S._convSuccessful=S._convOpt==='successful';S.pendKicker=parseInt(document.getElementById('tryKickerSel').value)||null;}
+  logScore();
+}
 function logScore(){
   const pts=S.pendType==='try'?5:S.pendType==='pengoal'||S.pendType==='dropgoal'?3:S.pendType==='penaltytry'?7:0;
   const conv=S.pendType==='try'?S._convSuccessful:false;
@@ -1963,8 +1965,6 @@ function logScore(){
   closeOvl('ovl-who');
   closeOvl('ovl-conv');
   closeOvl('ovl-kicker');
-  closeOvl('ovl-conv-outcome');
-  closeOvl('ovl-try-confirm');
   // Build share event
   let shareEv=null;
   if(S.pendType==='try'){
@@ -1997,7 +1997,6 @@ function updScore(){const sf=document.getElementById('scoreFor');const sa=docume
 function renderTl(){const b=document.getElementById('tlBody');if(!b)return;if(S.evs.length===0){b.innerHTML='<div class="tl-empty">No events yet</div>';updUndoBtn();return;}b.innerHTML=S.evs.map((e,i)=>{let eventLabel='';let eventDot=e.side==='for'?'for':'ag';if(e.type==='try'){const scorerDisplay=e.scorerName?`${e.scorerName} (#${e.scorer})`:e.scorer?`#${e.scorer}`:'Unknown';eventLabel=`Try by ${scorerDisplay}`;}else if(e.type==='conversion'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion by ${kickerDisplay}`;}else if(e.type==='conversion-missed'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Conversion missed by ${kickerDisplay}`;}else if(e.type==='pengoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Penalty goal by ${kickerDisplay}`;}else if(e.type==='dropgoal'){const kickerDisplay=e.kickerName?`${e.kickerName} (#${e.kicker})`:e.kicker?`#${e.kicker}`:'Unknown';eventLabel=`Drop goal by ${kickerDisplay}`;}else if(e.type==='penaltytry'){eventLabel='Penalty try';}else if(e.type==='yc'){eventLabel=e.label||'Yellow card';eventDot='yc';}else if(e.type==='sys'){eventLabel=e.txt||'System event';eventDot='sys';}return `<div class="tl-row"><div class="tl-dot ${eventDot}"></div><div class="tl-t">${fmtMs(e.ts)}</div><div class="tl-chip">${e.side==='for'?S.myTeam:e.side?S.opp:'Match'}</div><div class="tl-lbl">${eventLabel}</div><div class="tl-score">${e.pts?'+'+e.pts:'—'}</div></div>`;}).join('');updUndoBtn();}
 function updUndoBtn(){const btn=document.getElementById('undoBtn');if(!btn)return;const undoable=['try','conversion','conversion-missed','pengoal','dropgoal','penaltytry','yc'];const last=S.evs.length?S.evs[S.evs.length-1]:null;if(!last||!undoable.includes(last.type)){btn.style.display='none';return;}const labels={try:'↩ Undo try',conversion:'↩ Undo try','conversion-missed':'↩ Undo try',pengoal:'↩ Undo pen goal',dropgoal:'↩ Undo drop goal',penaltytry:'↩ Undo pen try',yc:'↩ Undo YC'};btn.textContent=labels[last.type]||'↩ Undo';btn.style.display='';}
 function undoLastEvent(){if(!S.evs.length)return;const last=S.evs[S.evs.length-1];if(last.type==='conversion'){if(last.side==='for')S.scFor-=2;else S.scAg-=2;S.evs.pop();if(S.evs.length&&S.evs[S.evs.length-1].type==='try'){const t=S.evs[S.evs.length-1];if(t.side==='for')S.scFor-=t.pts;else S.scAg-=t.pts;S.evs.pop();}}else if(last.type==='conversion-missed'){S.evs.pop();if(S.evs.length&&S.evs[S.evs.length-1].type==='try'){const t=S.evs[S.evs.length-1];if(t.side==='for')S.scFor-=t.pts;else S.scAg-=t.pts;S.evs.pop();}}else{const pts=last.pts||0;if(last.side==='for')S.scFor-=pts;else S.scAg-=pts;S.evs.pop();}updScore();renderTl();saveMatchState();}
-function preSelectLastKicker(){const lastKicker=S.pendSide==='for'?S.lastKickerFor:S.lastKickerAg;if(!lastKicker)return;const el=document.getElementById('convk_'+lastKicker);if(el){el.classList.add('sel');S.selKickerNum=lastKicker;document.getElementById('convKickerConfirmBtn').style.display='';}}
 function sysEv(txt){const e={type:'sys',txt:txt,ts:S.ms};S.evs.push(e);renderTl();}
 function sysEv(txt){const e={type:'sys',txt:txt,ts:S.ms};S.evs.push(e);renderTl();}
 function saveMatch(){const m={myTeam:S.myTeam,opp:S.opp,scFor:S.scFor,scAg:S.scAg,evs:S.evs,date:new Date().toLocaleDateString()};saveHistory(m);}
