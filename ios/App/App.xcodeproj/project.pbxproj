@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0AA21F5B4F1B4CD1F9CFE2F0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3FBA2B69234189EADC33D8D /* Foundation.framework */; };
+		1EBE8F2464C9F5CB7E4C2CFA /* RugbyMatchAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29848AE3C8A28FECCF68EE0D /* RugbyMatchAttributes.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		4D22ABE92AF431CB00220026 /* CapApp-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 4D22ABE82AF431CB00220026 /* CapApp-SPM */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
@@ -15,9 +17,39 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		57DD87D2C67A5652756A9A74 /* RugbyLiveActivityWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CBF8EE3B5D832EFE422390 /* RugbyLiveActivityWidgetBundle.swift */; };
+		6BABDCE60DACA6FD4A79F975 /* RugbyLiveActivityWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E9B57E1B48256B34C7226809 /* RugbyLiveActivityWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7D5EE4BC1E940BA8C2589FB8 /* RugbyLiveActivitiesPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571A33960ACB3C3968AD00EE /* RugbyLiveActivitiesPlugin.swift */; };
+		9F142DB168DFBA4175CCA205 /* RugbyLiveActivitiesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F518E5B34DD60727E4436B9 /* RugbyLiveActivitiesWidget.swift */; };
+		A8C0E33501E49C43AEBE47FA /* RugbyMatchAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29848AE3C8A28FECCF68EE0D /* RugbyMatchAttributes.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		C4C9D34106D26EA9D6336963 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE75DEE1BFB70EF03C5EB239;
+			remoteInfo = RugbyLiveActivityWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		678AE4A8B9DCAD56CF5FA018 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6BABDCE60DACA6FD4A79F975 /* RugbyLiveActivityWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		29848AE3C8A28FECCF68EE0D /* RugbyMatchAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RugbyMatchAttributes.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -27,10 +59,24 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		571A33960ACB3C3968AD00EE /* RugbyLiveActivitiesPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RugbyLiveActivitiesPlugin.swift; sourceTree = "<group>"; };
+		6F518E5B34DD60727E4436B9 /* RugbyLiveActivitiesWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RugbyLiveActivitiesWidget.swift; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		A1CBF8EE3B5D832EFE422390 /* RugbyLiveActivityWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RugbyLiveActivityWidgetBundle.swift; sourceTree = "<group>"; };
+		B09432FD262EF45045A595F5 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D3FBA2B69234189EADC33D8D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E9B57E1B48256B34C7226809 /* RugbyLiveActivityWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RugbyLiveActivityWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2ECB7584A21AC8F08B4C0473 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0AA21F5B4F1B4CD1F9CFE2F0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3011FED79650016851F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -48,6 +94,8 @@
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
+				938097FBF2D7D9C927BE8C18 /* Frameworks */,
+				8574AB816D6074578AA57B51 /* RugbyLiveActivityWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				E9B57E1B48256B34C7226809 /* RugbyLiveActivityWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,8 +119,55 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
+				A6F9AD57C1351CC391852277 /* Plugins */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		8145A911A54A3C629325B53F /* RugbyLiveActivities */ = {
+			isa = PBXGroup;
+			children = (
+				571A33960ACB3C3968AD00EE /* RugbyLiveActivitiesPlugin.swift */,
+				29848AE3C8A28FECCF68EE0D /* RugbyMatchAttributes.swift */,
+			);
+			name = RugbyLiveActivities;
+			path = RugbyLiveActivities;
+			sourceTree = "<group>";
+		};
+		8574AB816D6074578AA57B51 /* RugbyLiveActivityWidget */ = {
+			isa = PBXGroup;
+			children = (
+				6F518E5B34DD60727E4436B9 /* RugbyLiveActivitiesWidget.swift */,
+				A1CBF8EE3B5D832EFE422390 /* RugbyLiveActivityWidgetBundle.swift */,
+				B09432FD262EF45045A595F5 /* Info.plist */,
+			);
+			name = RugbyLiveActivityWidget;
+			path = RugbyLiveActivityWidget;
+			sourceTree = "<group>";
+		};
+		938097FBF2D7D9C927BE8C18 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B459AEB3E5AC190AC481A2AC /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A6F9AD57C1351CC391852277 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				8145A911A54A3C629325B53F /* RugbyLiveActivities */,
+			);
+			name = Plugins;
+			path = Plugins;
+			sourceTree = "<group>";
+		};
+		B459AEB3E5AC190AC481A2AC /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				D3FBA2B69234189EADC33D8D /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,10 +180,12 @@
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
+				678AE4A8B9DCAD56CF5FA018 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				529AFD71C87A706088B9F795 /* PBXTargetDependency */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -96,6 +194,23 @@
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CE75DEE1BFB70EF03C5EB239 /* RugbyLiveActivityWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D13CF3B872D38009A76FAB0 /* Build configuration list for PBXNativeTarget "RugbyLiveActivityWidget" */;
+			buildPhases = (
+				1E55EAAAE3E5FFD4EA855A0F /* Sources */,
+				2ECB7584A21AC8F08B4C0473 /* Frameworks */,
+				2AEF1E92E70A1009F6CD0DD6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RugbyLiveActivityWidget;
+			productName = RugbyLiveActivityWidget;
+			productReference = E9B57E1B48256B34C7226809 /* RugbyLiveActivityWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -130,11 +245,19 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				CE75DEE1BFB70EF03C5EB239 /* RugbyLiveActivityWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2AEF1E92E70A1009F6CD0DD6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3021FED79650016851F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -151,15 +274,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1E55EAAAE3E5FFD4EA855A0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9F142DB168DFBA4175CCA205 /* RugbyLiveActivitiesWidget.swift in Sources */,
+				57DD87D2C67A5652756A9A74 /* RugbyLiveActivityWidgetBundle.swift in Sources */,
+				A8C0E33501E49C43AEBE47FA /* RugbyMatchAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3001FED79650016851F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				7D5EE4BC1E940BA8C2589FB8 /* RugbyLiveActivitiesPlugin.swift in Sources */,
+				1EBE8F2464C9F5CB7E4C2CFA /* RugbyMatchAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		529AFD71C87A706088B9F795 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RugbyLiveActivityWidget;
+			target = CE75DEE1BFB70EF03C5EB239 /* RugbyLiveActivityWidget */;
+			targetProxy = C4C9D34106D26EA9D6336963 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
@@ -334,9 +478,75 @@
 			};
 			name = Release;
 		};
+		551CF7839BC0EF2ED56EFE38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RugbyLiveActivityWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.rugbycoach.app.RugbyLiveActivityWidget;
+				PRODUCT_BUNDLE_PACKAGE_TYPE = "XPC!";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7F4DED54DE45309397995602 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RugbyLiveActivityWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.rugbycoach.app.RugbyLiveActivityWidget;
+				PRODUCT_BUNDLE_PACKAGE_TYPE = "XPC!";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4D13CF3B872D38009A76FAB0 /* Build configuration list for PBXNativeTarget "RugbyLiveActivityWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				551CF7839BC0EF2ED56EFE38 /* Release */,
+				7F4DED54DE45309397995602 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		504EC2FF1FED79650016851F /* Build configuration list for PBXProject "App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

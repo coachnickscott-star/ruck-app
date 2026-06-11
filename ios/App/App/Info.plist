@@ -58,5 +58,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<!-- Live Activities (ActivityKit, iOS 16.1+). Required for the RugbyLiveActivities plugin. -->
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>

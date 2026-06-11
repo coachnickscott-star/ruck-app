@@ -1076,6 +1076,7 @@ html,body{height:100%;font-family:-apple-system,'Inter',sans-serif;background:#f
 
 <script src="pdf.min.js"></script>
 <script src="mammoth.browser.min.js"></script>
+<script src="rugby-live-activities.js"></script>
 <script>
 if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
 </script>
@@ -1106,6 +1107,9 @@ const S = {
   _fullTimeMode: false,
   _setupForTeamName: '', _setupAgTeamName: '',
 };
+// Expose match state to the Live Activity controller (rugby-live-activities.js).
+// Top-level `const S` is NOT a window property, so alias it explicitly.
+window.S = S;
 
 // ════════════════════════════════════════════════════════
 // PERSISTENCE
@@ -1675,6 +1679,7 @@ function startMatch() {
   closePage('pg-setup');
   openPage('pg-match');
   saveMatchState();
+  RugbyLiveActivity.reset(); // new match: drop any prior Live Activity tracking
 }
 
 function sBtn(id,txt,fn,dis){const b=document.getElementById(id);if(b){b.innerHTML=txt;if(fn!==undefined)b.onclick=fn;b.disabled=dis;}}
@@ -1683,11 +1688,12 @@ function gcls(id,method,cls){const el=document.getElementById(id);if(el)el.class
 const PAUSE_ICON='<svg width="13" height="19" viewBox="0 0 13 19" style="display:block;margin:auto"><rect x="0" y="0" width="4" height="19" rx="1.5" fill="currentColor"/><rect x="9" y="0" width="4" height="19" rx="1.5" fill="currentColor"/></svg>';
 function handleMain(){if(!S.running){S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn',PAUSE_ICON,handleMain,false);gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent',S.half===1?'First half — in progress':'Second half — in progress');gset('matchHalfLbl','textContent',S.half===1?'1st half':'2nd half');const hb=document.getElementById('halfBtn');if(hb)hb.disabled=false;const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);// Kickoff event on very first start
 if(S.half===1&&S.ms===0&&S.evs.length===0){const koTeam=S.kickoffTeam==='for'?S.myTeam:S.opp;sysEv(`${koTeam} kicked off`);}
-}else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','▶',handleMain,false);gcls('timerDisp','remove','live');gcls('timerDisp','add','paused');gset('timerLbl','textContent','Paused');saveMatchState();}}
-function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;gcls('htBanner','add','show');gset('htTimerLbl','textContent','First half ended at');gset('htTimerDisp','textContent',fmtMs(S.ms));const mb=document.getElementById('mainBtn');if(mb)mb.disabled=true;enableEvBtns(false);saveMatchState();}else if(S.half===2){S._fullTimeMode=true;const tc=document.querySelector('.timer-ctrls');if(tc)tc.style.display='none';const sc=document.querySelector('.scoring-card');if(sc)sc.style.display='none';gset('timerLbl','textContent','Full time');gset('matchHalfLbl','textContent','');gcls('timerDisp','remove','live');gcls('timerDisp','remove','paused');gcls('ftBanner','add','show');gset('ftScore','textContent',`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`);const msb=document.getElementById('matchShareBtn');if(msb)msb.style.display='';saveMatch();clearMatchState();}}
+RugbyLiveActivity.sync(true);// start (first run) / resume the Live Activity, show LIVE
+}else{S.running=false;clearInterval(S.timer);sBtn('mainBtn','▶',handleMain,false);gcls('timerDisp','remove','live');gcls('timerDisp','add','paused');gset('timerLbl','textContent','Paused');saveMatchState();RugbyLiveActivity.sync(true);/* show PAUSED */}}
+function handleHalf(){if(S.running){clearInterval(S.timer);S.running=false;}if(S.half===1){S.half=2;S.htMs=S.ms;gcls('htBanner','add','show');gset('htTimerLbl','textContent','First half ended at');gset('htTimerDisp','textContent',fmtMs(S.ms));const mb=document.getElementById('mainBtn');if(mb)mb.disabled=true;enableEvBtns(false);saveMatchState();RugbyLiveActivity.sync(true);/* half-time: PAUSED */}else if(S.half===2){S._fullTimeMode=true;const tc=document.querySelector('.timer-ctrls');if(tc)tc.style.display='none';const sc=document.querySelector('.scoring-card');if(sc)sc.style.display='none';gset('timerLbl','textContent','Full time');gset('matchHalfLbl','textContent','');gcls('timerDisp','remove','live');gcls('timerDisp','remove','paused');gcls('ftBanner','add','show');gset('ftScore','textContent',`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`);const msb=document.getElementById('matchShareBtn');if(msb)msb.style.display='';saveMatch();clearMatchState();RugbyLiveActivity.end();/* full time: close Live Activity */}}
 function resumeFromHT(){if(S.dir==='up'){S.ms=S.halfMins*60000;S.halfMsOffset=S.halfMins*60000;}else{S.ms=0;S.halfMsOffset=0;}S.ts=Date.now()-S.ms;S.running=true;S._lastTick=Date.now();S.timer=setInterval(tick,100);sBtn('mainBtn',PAUSE_ICON,handleMain,false);gcls('htBanner','remove','show');gcls('timerDisp','remove','paused');gcls('timerDisp','add','live');gset('timerLbl','textContent','Second half — in progress');gset('matchHalfLbl','textContent','2nd half');const hb=document.getElementById('halfBtn');if(hb){hb.innerHTML='FT';hb.disabled=false;}const yb=document.getElementById('ycBtn');if(yb)yb.disabled=false;enableEvBtns(true);// 2nd half kickoff — opposite team
-const koTeam2=S.kickoffTeam==='for'?S.opp:S.myTeam;sysEv(`${koTeam2} kicked off 2nd half`);saveMatchState();}
-function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('htBanner').classList.remove('show');document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();}
+const koTeam2=S.kickoffTeam==='for'?S.opp:S.myTeam;sysEv(`${koTeam2} kicked off 2nd half`);saveMatchState();RugbyLiveActivity.sync(true);/* 2nd half: LIVE, half flips to 2 */}
+function endMatchEarly(){S.half=2;S._fullTimeMode=true;document.getElementById('htBanner').classList.remove('show');document.getElementById('ftBanner').classList.add('show');document.getElementById('ftScore').textContent=`${S.myTeam} ${S.scFor} – ${S.scAg} ${S.opp}`;document.getElementById('matchShareBtn').style.display='';saveMatch();RugbyLiveActivity.end();/* ended early: close Live Activity */}
 function enableEvBtns(en){document.getElementById('b_try').disabled=!en;document.getElementById('b_pengoal').disabled=!en;document.getElementById('b_dropgoal').disabled=!en;document.getElementById('b_penaltytry').disabled=!en;}
 function tick(){
   const now=Date.now();
@@ -1699,6 +1705,7 @@ function tick(){
     if(S.ycTimers.length!==prev||S.ycTimers.length>0)renderYCPills();
   }
   updClock();
+  RugbyLiveActivity.sync();// throttled: pushes on change or every ~10s to resync the clock
 }
 function updClock(){const td=document.getElementById('timerDisp');if(!td)return;const t=S.dir==='up'?S.ms:(S.halfMins*60000)-S.ms;const neg=t<0;const m=Math.floor((neg?-t:t)/60000),s=Math.floor(((neg?-t:t)%60000)/1000);const fmt=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');td.textContent=fmt;const card=document.querySelector('.timer-card');if(S.halfMins&&(S.ms-(S.halfMsOffset||0))>S.halfMins*60000){if(!td.classList.contains('negative')){td.classList.add('negative');if(card)card.classList.add('overtime');}if(S.dir==='down')td.classList.add('negative');}else{td.classList.remove('negative');if(card)card.classList.remove('overtime');}}
 function fmtMs(ms){const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
@@ -1719,6 +1726,7 @@ function closeLeaveDlg(){
 function doLeaveMatch(){
   document.getElementById('dlg-leave').classList.remove('show');
   clearInterval(S.timer);clearInterval(S.htTimer);S.running=false;
+  RugbyLiveActivity.end();// leaving match: close any Live Activity
   clearMatchState();
   // Restore setup page with saved match settings
   const stdValues=['40','35','30','25','20','7','10'];
@@ -1837,7 +1845,8 @@ function logScore(){
     S.scAg+=pts;
     if(conv)S.scAg+=2;
   }
-  
+  RugbyLiveActivity.sync(true);// instant Lock Screen score sync (bypass throttle)
+
   // Create main scoring event (try, penalty goal, drop goal, or penalty try)
   if(S.pendType==='try'){
     const tryEv={type:'try',side:S.pendSide,scorer:S.pendScorer,scorerName:'',pts:pts,ts:S.ms};
