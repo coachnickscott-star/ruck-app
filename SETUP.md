@@ -6,6 +6,26 @@ Capacitor project so live match scores appear on the iOS Lock Screen and Dynamic
 > **Audience:** basic Swift knowledge, no prior Live Activities experience.
 > **Target:** iOS 16.1+ · **Bundle ID:** `ai.rugbycoach.app` · **Capacitor:** 8.x (SPM)
 
+> ## ✅ Already done for you
+> The Xcode project (`ios/App/App.xcodeproj`) has **already been wired** by
+> `ios/App/wire_live_activities.rb`:
+> - the plugin files are added to the **App** target,
+> - the **RugbyLiveActivityWidget** extension target exists, with its sources, Info.plist
+>   and build settings (bundle id `ai.rugbycoach.app.RugbyLiveActivityWidget`, deploy 16.1),
+> - `RugbyMatchAttributes.swift` is shared into **both** targets,
+> - the App target **depends on** and **embeds** the widget (`Embed App Extensions`),
+> - `NSSupportsLiveActivities` is set in the app Info.plist,
+> - the JS bridge is integrated into `www/index.html` and unit-tested (`npm test`).
+>
+> So **Sections 2–5 below are now "verify", not "do"** — open the project and confirm.
+> The only thing a Mac is genuinely required for is **Section 6 (signing — pick your
+> Team)** and building/running on a simulator or device.
+>
+> If you ever need to re-wire (e.g. the project file was regenerated), just run:
+> ```bash
+> cd ios/App && ruby wire_live_activities.rb   # idempotent
+> ```
+
 ---
 
 ## 0. What you're building

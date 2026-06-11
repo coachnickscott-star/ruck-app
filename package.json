@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test \"test/*.test.mjs\"",
     "postinstall": "npx cap add android 2>/dev/null || true; npx cap add ios 2>/dev/null || true",
     "build": "node generate-icons.js; npx cap sync"
   },
